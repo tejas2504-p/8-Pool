@@ -349,7 +349,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
         dpr={graphicsQuality === 'low' ? 1 : [1, 2]}
         gl={{ antialias: graphicsQuality !== 'low' }}
       >
-        <FpsLimiter />
+        {/* <FpsLimiter /> */}
         <CameraController cueBallRef={cueBallRef} />
         <Lights />
         <Environment />
