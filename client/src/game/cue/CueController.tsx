@@ -44,6 +44,7 @@ export const CueController: React.FC<CueControllerProps> = ({
   const pullbackRef = useRef(0);
   const powerRef = useRef(0);
   const pauseTimeRef = useRef(0.18); // 180ms pause at peak pullback
+  const hasEmittedShootRef = useRef(false);
 
   // Sync state power to ref for hot path useFrame access
   useEffect(() => {
@@ -59,6 +60,67 @@ export const CueController: React.FC<CueControllerProps> = ({
       inputManager.deactivate();
     };
   }, [gl]);
+
+  // Synchronize state changes when parent updates power prop directly (e.g. from slider)
+  useEffect(() => {
+    if (isLocalTurn) {
+      if (power > 0 && (turnState === 'idle' || turnState === 'aiming')) {
+        setTurnState('charging');
+      } else if (power === 0 && turnState === 'charging') {
+        setTurnState('idle');
+      }
+    }
+  }, [power, turnState, isLocalTurn, setTurnState]);
+
+  // Listen to keyboard & scroll wheel inputs
+  useEffect(() => {
+    if (!isLocalTurn) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Spacebar to shoot
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (powerRef.current >= 5 && (turnState === 'idle' || turnState === 'aiming' || turnState === 'charging')) {
+          setTurnState('shooting');
+        }
+      }
+      // Arrow Up or W to increase power
+      else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        e.preventDefault();
+        if (turnState !== 'balls-moving' && turnState !== 'shooting') {
+          const nextPower = Math.min(100, powerRef.current + 5);
+          setPower(nextPower);
+        }
+      }
+      // Arrow Down or S to decrease power
+      else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        if (turnState !== 'balls-moving' && turnState !== 'shooting') {
+          const nextPower = Math.max(0, powerRef.current - 5);
+          setPower(nextPower);
+        }
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (turnState === 'balls-moving' || turnState === 'shooting') return;
+      
+      e.preventDefault();
+      const change = e.deltaY < 0 ? 5 : -5;
+      const nextPower = Math.min(Math.max(0, powerRef.current + change), 100);
+      setPower(nextPower);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    gl.domElement.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (gl.domElement) {
+        gl.domElement.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, [gl, isLocalTurn, turnState, roomId, setPower, setTurnState]);
 
   const matchState = gameManager.getState();
   const isLocalTurn = !roomId ||
@@ -321,11 +383,6 @@ export const CueController: React.FC<CueControllerProps> = ({
         }
       }
 
-      // Transition to charging if player initiates mouse drag
-      if (isLocalTurn && inputManager.getIsDragging()) {
-        setTurnState('charging');
-      }
-
       // Position visual cue stick
       if (cueStickRef.current) {
         cueStickRef.current.visible = true;
@@ -344,11 +401,9 @@ export const CueController: React.FC<CueControllerProps> = ({
 
     // B. Handle Charging state
     else if (turnState === 'charging') {
-      const currentPower = inputManager.getPower();
-      setPower(currentPower);
-      pullbackRef.current = (currentPower / 100) * 1.5;
+      pullbackRef.current = (power / 100) * 1.5;
 
-      // Allow aiming adjustment while dragging
+      // Allow aiming adjustment while charging
       if (isLocalTurn) {
         const currentAngle = InputManager.calculateAimAngle(state.raycaster, cueBallPos);
         aimAngleRef.current = currentAngle;
@@ -375,23 +430,17 @@ export const CueController: React.FC<CueControllerProps> = ({
 
       // Render target aim line
       updateSmartAimLine(cueBallPos);
-
-      // On release, transition to shooting (strike) or return to idle if canceled
-      if (!inputManager.getIsDragging()) {
-        if (currentPower >= 5) {
-          if (roomId && isLocalTurn) {
-            socketService.emit('shoot', { roomId, angle: aimAngleRef.current, power: currentPower });
-          }
-          setTurnState('shooting');
-        } else {
-          setPower(0);
-          setTurnState('idle');
-        }
-      }
     }
 
     // C. Handle Shooting state (Strike Animation + Pause)
     else if (turnState === 'shooting') {
+      if (isLocalTurn && !hasEmittedShootRef.current) {
+        hasEmittedShootRef.current = true;
+        if (roomId) {
+          socketService.emit('shoot', { roomId, angle: aimAngleRef.current, power: powerRef.current });
+        }
+      }
+
       // 1. Backswing peak pause (180ms)
       if (pauseTimeRef.current > 0) {
         pauseTimeRef.current -= delta;
@@ -436,6 +485,7 @@ export const CueController: React.FC<CueControllerProps> = ({
         ShotController.executeShot(cueBallRef, powerRef.current, aimAngleRef.current);
         setPower(0);
         pauseTimeRef.current = 0.18; // Reset pause timer for next turn
+        hasEmittedShootRef.current = false; // Reset emission flag
       }
     }
 

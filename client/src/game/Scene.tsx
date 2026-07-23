@@ -153,6 +153,53 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
   const [power, setPower] = useState<number>(0);
   const [cueBallScratched, setCueBallScratched] = useState<boolean>(false);
   const [hasEntered, setHasEntered] = useState<boolean>(false);
+  const [isPowerDragging, setIsPowerDragging] = useState(false);
+  const powerTrackRef = useRef<HTMLDivElement>(null);
+
+  const updatePowerFromPointer = (e: React.PointerEvent<HTMLDivElement>) => {
+    const track = powerTrackRef.current;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+    const relativeY = e.clientY - rect.top;
+    const pct = 1 - Math.min(Math.max(relativeY / rect.height, 0), 1);
+    const newPower = Math.round(pct * 100);
+    setPower(newPower);
+    if (newPower > 0) {
+      if (turnState === 'idle' || turnState === 'aiming') {
+        setTurnState('charging');
+      }
+    } else {
+      if (turnState === 'charging') {
+        setTurnState('idle');
+      }
+    }
+  };
+
+  const handlePowerPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsPowerDragging(true);
+    updatePowerFromPointer(e);
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePowerPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isPowerDragging) {
+      e.preventDefault();
+      updatePowerFromPointer(e);
+    }
+  };
+
+  const handlePowerPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsPowerDragging(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  const handleStrike = () => {
+    if (power >= 5 && (turnState === 'idle' || turnState === 'aiming' || turnState === 'charging')) {
+      setTurnState('shooting');
+    }
+  };
 
   const cueBallRef = useRef<RapierRigidBody | null>(null);
   const ballRefs = useRef<Map<number, RapierRigidBody>>(new Map());
@@ -345,9 +392,9 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
       )}
       {/* 3D Canvas rendering the environment, physics, and gameplay entities */}
       <Canvas 
-        shadows={graphicsQuality === 'low' ? false : { type: THREE.PCFSoftShadowMap }}
+        shadows={graphicsQuality !== 'low'}
         dpr={graphicsQuality === 'low' ? 1 : [1, 2]}
-        gl={{ antialias: graphicsQuality !== 'low' }}
+        gl={{ antialias: graphicsQuality !== 'low', powerPreference: 'high-performance' }}
       >
         {/* <FpsLimiter /> */}
         <CameraController cueBallRef={cueBallRef} />
