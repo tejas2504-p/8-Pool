@@ -162,6 +162,11 @@ export const CueController: React.FC<CueControllerProps> = ({
         primary.position.y = 0.28 - 0.05;
         primary.scale.set(1, 1, dist);
         primary.rotation.set(0, Math.atan2(dir.x, dir.z), 0);
+
+        const primaryMat = primary.material as THREE.ShaderMaterial;
+        if (primaryMat && primaryMat.uniforms && primaryMat.uniforms.dashScale) {
+          primaryMat.uniforms.dashScale.value = dist * 35.0;
+        }
       }
 
       // B. Ghost Ball contact outline
@@ -187,6 +192,11 @@ export const CueController: React.FC<CueControllerProps> = ({
           targetL.position.y = 0.28 - 0.05;
           targetL.scale.set(1, 1, 1.5);
           targetL.rotation.set(0, Math.atan2(targetDir.x, targetDir.z), 0);
+
+          const targetMat = targetL.material as THREE.ShaderMaterial;
+          if (targetMat && targetMat.uniforms && targetMat.uniforms.dashScale) {
+            targetMat.uniforms.dashScale.value = 1.5 * 35.0;
+          }
         }
 
         // D. Cue ball deflection line
@@ -198,6 +208,11 @@ export const CueController: React.FC<CueControllerProps> = ({
           deflectL.position.y = 0.28 - 0.05;
           deflectL.scale.set(1, 1, 1.5);
           deflectL.rotation.set(0, Math.atan2(deflectDir.x, deflectDir.z), 0);
+
+          const deflectMat = deflectL.material as THREE.ShaderMaterial;
+          if (deflectMat && deflectMat.uniforms && deflectMat.uniforms.dashScale) {
+            deflectMat.uniforms.dashScale.value = 1.5 * 35.0;
+          }
         }
       } else {
         if (targetL) targetL.visible = false;
@@ -213,6 +228,11 @@ export const CueController: React.FC<CueControllerProps> = ({
           deflectL.position.y = 0.28 - 0.05;
           deflectL.scale.set(1, 1, 1.5);
           deflectL.rotation.set(0, Math.atan2(deflectDir.x, deflectDir.z), 0);
+
+          const deflectMat = deflectL.material as THREE.ShaderMaterial;
+          if (deflectMat && deflectMat.uniforms && deflectMat.uniforms.dashScale) {
+            deflectMat.uniforms.dashScale.value = 1.5 * 35.0;
+          }
         }
       }
     } else {
@@ -226,6 +246,11 @@ export const CueController: React.FC<CueControllerProps> = ({
         primary.position.y = 0.28 - 0.05;
         primary.scale.set(1, 1, dist);
         primary.rotation.set(0, Math.atan2(dir.x, dir.z), 0);
+
+        const primaryMat = primary.material as THREE.ShaderMaterial;
+        if (primaryMat && primaryMat.uniforms && primaryMat.uniforms.dashScale) {
+          primaryMat.uniforms.dashScale.value = dist * 35.0;
+        }
       }
 
       if (ghost) ghost.visible = false;
