@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 // 1. REUSE MATERIALS: Instantiated once at module scope
 const feltMaterial = new THREE.MeshStandardMaterial({
-  color: '#0e7490',
+  color: '#155843',
   roughness: 0.85,
   metalness: 0.15,
 });
