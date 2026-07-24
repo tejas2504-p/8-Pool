@@ -11,18 +11,18 @@ export const PhysicsConstants = {
   CUSHION_RESTITUTION: 0.75, // Bounciness of pool table rails
   CUSHION_FRICTION: 0.1, // Friction along rails
 
-  // Pocket coordinates matching the visual table structure
+  // Pocket coordinates matching the visual table structure (scaled by 1.2x)
   // Corner pockets have radius 0.26, side/middle pockets have radius 0.24
   POCKETS: [
-    { id: 'top-left', position: [-4.8, 0.11, -2.3] as [number, number, number], radius: 0.26 },
-    { id: 'top-right', position: [4.8, 0.11, -2.3] as [number, number, number], radius: 0.26 },
-    { id: 'bottom-left', position: [-4.8, 0.11, 2.3] as [number, number, number], radius: 0.26 },
-    { id: 'bottom-right', position: [4.8, 0.11, 2.3] as [number, number, number], radius: 0.26 },
-    { id: 'top-middle', position: [0, 0.11, -2.4] as [number, number, number], radius: 0.24 },
-    { id: 'bottom-middle', position: [0, 0.11, 2.4] as [number, number, number], radius: 0.24 },
+    { id: 'top-left', position: [-5.76, 0.11, -2.76] as [number, number, number], radius: 0.26 },
+    { id: 'top-right', position: [5.76, 0.11, -2.76] as [number, number, number], radius: 0.26 },
+    { id: 'bottom-left', position: [-5.76, 0.11, 2.76] as [number, number, number], radius: 0.26 },
+    { id: 'bottom-right', position: [5.76, 0.11, 2.76] as [number, number, number], radius: 0.26 },
+    { id: 'top-middle', position: [0, 0.11, -2.88] as [number, number, number], radius: 0.24 },
+    { id: 'bottom-middle', position: [0, 0.11, 2.88] as [number, number, number], radius: 0.24 },
   ],
 
-  CUE_BALL_SPAWN: [-2.5, 0.28, 0] as [number, number, number],
+  CUE_BALL_SPAWN: [-3.0, 0.28, 0] as [number, number, number],
 };
 
 export default PhysicsConstants;

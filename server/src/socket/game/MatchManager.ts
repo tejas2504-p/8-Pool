@@ -170,11 +170,10 @@ export class MatchManager {
         }
       }
 
-      // Pocket positions
       const pockets = [
-        { x: -4.5, z: -2.0 }, { x: 4.5, z: -2.0 },
-        { x: -4.5, z: 2.0 }, { x: 4.5, z: 2.0 },
-        { x: 0, z: -2.0 }, { x: 0, z: 2.0 }
+        { x: -5.4, z: -2.4 }, { x: 5.4, z: -2.4 },
+        { x: -5.4, z: 2.4 }, { x: 5.4, z: 2.4 },
+        { x: 0, z: -2.4 }, { x: 0, z: 2.4 }
       ];
 
       pocketedObjectBalls.forEach((bId) => {
