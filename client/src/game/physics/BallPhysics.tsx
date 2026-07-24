@@ -21,6 +21,7 @@ export const BallPhysics = forwardRef<RapierRigidBody, BallPhysicsProps>(
         linearDamping={PhysicsConstants.BALL_LINEAR_DAMPING}
         angularDamping={PhysicsConstants.BALL_ANGULAR_DAMPING}
         enabledTranslations={[true, false, true]}
+        ccd={true}
         onCollisionEnter={(event) => {
           // Route collision to manager
           const otherBody = event.other.rigidBodyObject;
