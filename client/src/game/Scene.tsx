@@ -13,7 +13,7 @@ import { GameManager, MatchState, INITIAL_MATCH_STATE } from './rules';
 import { collisionManager } from './physics/CollisionManager';
 import socketService from '../socket/socket';
 import { audioManager } from '../audio';
-import { useParticles, Glow, Trail, Confetti, PocketEffect } from '../effects';
+import { useParticles, Trail, Confetti, PocketEffect } from '../effects';
 import GameLoader from '../components/GameLoader';
 import LandscapePrompt from '../components/LandscapePrompt';
 import MobileControlsOverlay from '../components/MobileControlsOverlay';
@@ -443,7 +443,6 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
         </PhysicsWorld>
 
         {/* 3D Visual Effects Highlights */}
-        <Glow />
         <Trail targetRef={cueBallRef} />
         <Confetti active={confettiActive} />
         {bursts.map((b) => (
