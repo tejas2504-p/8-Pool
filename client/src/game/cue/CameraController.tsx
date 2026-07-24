@@ -7,9 +7,10 @@ import gsap from 'gsap';
 
 interface CameraControllerProps {
   cueBallRef: React.RefObject<RapierRigidBody | null>;
+  enabled?: boolean;
 }
 
-export const CameraController: React.FC<CameraControllerProps> = ({ cueBallRef }) => {
+export const CameraController: React.FC<CameraControllerProps> = ({ cueBallRef, enabled = true }) => {
   const orbitControlsRef = useRef<any>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
 
@@ -54,6 +55,7 @@ export const CameraController: React.FC<CameraControllerProps> = ({ cueBallRef }
       />
       <OrbitControls 
         ref={orbitControlsRef}
+        enabled={enabled}
         maxPolarAngle={Math.PI / 2.1} 
         minDistance={4} 
         maxDistance={25} 

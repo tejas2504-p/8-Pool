@@ -175,6 +175,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
   };
 
   const handlePowerPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return; // Only allow left-click to drag power slider
     e.preventDefault();
     setIsPowerDragging(true);
     updatePowerFromPointer(e);
@@ -399,7 +400,10 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
         gl={{ antialias: graphicsQuality !== 'low', powerPreference: 'high-performance' }}
       >
         {/* <FpsLimiter /> */}
-        <CameraController cueBallRef={cueBallRef} />
+        <CameraController 
+          cueBallRef={cueBallRef} 
+          enabled={!matchState.ballInHand && turnState !== 'shooting' && turnState !== 'balls-moving'} 
+        />
         <Lights />
         <Environment />
         <PhysicsWorld>
