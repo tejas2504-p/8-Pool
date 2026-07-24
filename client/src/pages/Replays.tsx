@@ -57,8 +57,8 @@ const ReplayBalls: React.FC<{
             <sphereGeometry args={[0.18, 32, 32]} />
             <meshStandardMaterial
               map={getBallTexture(b.id)}
-              roughness={0.15}
-              metalness={0.1}
+              roughness={0.28}
+              metalness={0.0}
             />
           </mesh>
         ))}

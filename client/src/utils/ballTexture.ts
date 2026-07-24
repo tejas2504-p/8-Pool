@@ -2,21 +2,21 @@ import * as THREE from 'three';
 
 export const BALL_COLORS: Record<number, string> = {
   0: '#ffffff', // Cue Ball
-  1: '#eab308', // Yellow
-  2: '#2563eb', // Blue
-  3: '#dc2626', // Red
-  4: '#9333ea', // Purple
-  5: '#ea580c', // Orange
-  6: '#16a34a', // Green
-  7: '#7f1d1d', // Maroon
+  1: '#ca8a04', // Darker Yellow
+  2: '#1d4ed8', // Darker Blue
+  3: '#b91c1c', // Darker Red
+  4: '#7e22ce', // Darker Purple
+  5: '#c2410c', // Darker Orange
+  6: '#15803d', // Darker Green
+  7: '#5d1414', // Darker Maroon
   8: '#111111', // Black
-  9: '#eab308', // Yellow Stripe
-  10: '#2563eb', // Blue Stripe
-  11: '#dc2626', // Red Stripe
-  12: '#9333ea', // Purple Stripe
-  13: '#ea580c', // Orange Stripe
-  14: '#16a34a', // Green Stripe
-  15: '#7f1d1d', // Maroon Stripe
+  9: '#ca8a04', // Darker Yellow Stripe
+  10: '#1d4ed8', // Darker Blue Stripe
+  11: '#b91c1c', // Darker Red Stripe
+  12: '#7e22ce', // Darker Purple Stripe
+  13: '#c2410c', // Darker Orange Stripe
+  14: '#15803d', // Darker Green Stripe
+  15: '#5d1414', // Darker Maroon Stripe
 };
 
 const textureCache: Record<number, THREE.CanvasTexture> = {};
