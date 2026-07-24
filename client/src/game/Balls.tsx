@@ -2,6 +2,7 @@ import React from 'react';
 import { RapierRigidBody } from '@react-three/rapier';
 import Ball from './Ball';
 import { PhysicsConstants } from './physics/PhysicsConstants';
+import { BALL_COLORS } from '../utils/ballTexture';
 
 interface BallsProps {
   activeBalls: number[];
@@ -10,22 +11,22 @@ interface BallsProps {
 }
 
 const BALL_CONFIGS = [
-  { number: 0, color: '#ffffff', position: PhysicsConstants.CUE_BALL_SPAWN },
-  { number: 1, color: '#eab308', position: [1.5, 0.28, 0] as [number, number, number] },
-  { number: 9, color: '#fef08a', position: [1.812, 0.28, -0.18] as [number, number, number] },
-  { number: 2, color: '#2563eb', position: [1.812, 0.28, 0.18] as [number, number, number] },
-  { number: 10, color: '#60a5fa', position: [2.124, 0.28, -0.36] as [number, number, number] },
-  { number: 8, color: '#111111', position: [2.124, 0.28, 0] as [number, number, number] },
-  { number: 3, color: '#dc2626', position: [2.124, 0.28, 0.36] as [number, number, number] },
-  { number: 11, color: '#f87171', position: [2.436, 0.28, -0.54] as [number, number, number] },
-  { number: 4, color: '#9333ea', position: [2.436, 0.28, -0.18] as [number, number, number] },
-  { number: 12, color: '#c084fc', position: [2.436, 0.28, 0.18] as [number, number, number] },
-  { number: 5, color: '#ea580c', position: [2.436, 0.28, 0.54] as [number, number, number] },
-  { number: 7, color: '#7f1d1d', position: [2.748, 0.28, -0.72] as [number, number, number] },
-  { number: 6, color: '#16a34a', position: [2.748, 0.28, -0.36] as [number, number, number] },
-  { number: 14, color: '#4ade80', position: [2.748, 0.28, 0] as [number, number, number] },
-  { number: 13, color: '#fdba74', position: [2.748, 0.28, 0.36] as [number, number, number] },
-  { number: 15, color: '#fda4af', position: [2.748, 0.28, 0.72] as [number, number, number] },
+  { number: 0, color: BALL_COLORS[0], position: PhysicsConstants.CUE_BALL_SPAWN },
+  { number: 1, color: BALL_COLORS[1], position: [1.5, 0.28, 0] as [number, number, number] },
+  { number: 9, color: BALL_COLORS[9], position: [1.812, 0.28, -0.18] as [number, number, number] },
+  { number: 2, color: BALL_COLORS[2], position: [1.812, 0.28, 0.18] as [number, number, number] },
+  { number: 10, color: BALL_COLORS[10], position: [2.124, 0.28, -0.36] as [number, number, number] },
+  { number: 8, color: BALL_COLORS[8], position: [2.124, 0.28, 0] as [number, number, number] },
+  { number: 3, color: BALL_COLORS[3], position: [2.124, 0.28, 0.36] as [number, number, number] },
+  { number: 11, color: BALL_COLORS[11], position: [2.436, 0.28, -0.54] as [number, number, number] },
+  { number: 4, color: BALL_COLORS[4], position: [2.436, 0.28, -0.18] as [number, number, number] },
+  { number: 12, color: BALL_COLORS[12], position: [2.436, 0.28, 0.18] as [number, number, number] },
+  { number: 5, color: BALL_COLORS[5], position: [2.436, 0.28, 0.54] as [number, number, number] },
+  { number: 7, color: BALL_COLORS[7], position: [2.748, 0.28, -0.72] as [number, number, number] },
+  { number: 6, color: BALL_COLORS[6], position: [2.748, 0.28, -0.36] as [number, number, number] },
+  { number: 14, color: BALL_COLORS[14], position: [2.748, 0.28, 0] as [number, number, number] },
+  { number: 13, color: BALL_COLORS[13], position: [2.748, 0.28, 0.36] as [number, number, number] },
+  { number: 15, color: BALL_COLORS[15], position: [2.748, 0.28, 0.72] as [number, number, number] },
 ];
 
 export const Balls: React.FC<BallsProps> = ({ activeBalls, cueBallRef, ballRefs }) => {

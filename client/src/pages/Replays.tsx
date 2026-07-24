@@ -7,6 +7,7 @@ import Lights from '../game/Lights';
 import Environment from '../game/Environment';
 import PoolTable from '../game/PoolTable';
 import { CameraController } from '../game/cue';
+import { getBallTexture } from '../utils/ballTexture';
 
 interface PlayerSummary {
   _id: string;
@@ -47,12 +48,6 @@ interface ReplayItem {
 const ReplayBalls: React.FC<{
   ballsSnapshot: Array<{ id: number; x: number; y: number; z: number; isActive: boolean }>;
 }> = ({ ballsSnapshot }) => {
-  const ballColors: Record<number, string> = {
-    0: '#ffffff', 1: '#eab308', 2: '#2563eb', 3: '#dc2626', 4: '#9333ea',
-    5: '#ea580c', 6: '#16a34a', 7: '#7f1d1d', 8: '#111111', 9: '#fef08a',
-    10: '#60a5fa', 11: '#f87171', 12: '#c084fc', 13: '#fdba74', 14: '#4ade80', 15: '#fda4af',
-  };
-
   return (
     <group>
       {ballsSnapshot
@@ -61,7 +56,7 @@ const ReplayBalls: React.FC<{
           <mesh key={b.id} position={[b.x, 0.28, b.z]} castShadow receiveShadow>
             <sphereGeometry args={[0.18, 32, 32]} />
             <meshStandardMaterial
-              color={ballColors[b.id] || '#ffffff'}
+              map={getBallTexture(b.id)}
               roughness={0.15}
               metalness={0.1}
             />

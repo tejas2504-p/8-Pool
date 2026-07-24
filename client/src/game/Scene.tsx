@@ -18,6 +18,7 @@ import GameLoader from '../components/GameLoader';
 import LandscapePrompt from '../components/LandscapePrompt';
 import MobileControlsOverlay from '../components/MobileControlsOverlay';
 import useSettingsStore from '../store/useSettingsStore';
+import { BALL_COLORS } from '../utils/ballTexture';
 
 // Sub-component to monitor ball movement and reset turns on each physics frame
 const TurnController: React.FC<{
@@ -116,11 +117,7 @@ const PhysicsConstraintController: React.FC<{
 };
 
 // HUD Colors mapped for remaining balls indicator
-const HUD_BALL_COLORS: Record<number, string> = {
-  1: '#eab308', 2: '#2563eb', 3: '#dc2626', 4: '#9333ea', 5: '#ea580c',
-  6: '#16a34a', 7: '#7f1d1d', 8: '#111111', 9: '#fef08a', 10: '#60a5fa',
-  11: '#f87171', 12: '#c084fc', 13: '#fdba74', 14: '#4ade80', 15: '#fda4af',
-};
+const HUD_BALL_COLORS: Record<number, string> = BALL_COLORS;
 
 const FpsLimiter: React.FC = () => {
   const fpsLimit = useSettingsStore((state) => state.settings.fpsLimit);
@@ -531,6 +528,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
         <div className="flex gap-1">
           {Object.keys(HUD_BALL_COLORS).map((numStr) => {
             const num = parseInt(numStr);
+            if (num === 0) return null; // Cue ball is not in the object balls rack
             const isActive = activeBalls.includes(num);
             const color = HUD_BALL_COLORS[num];
             const isStripe = num > 8;
@@ -544,16 +542,25 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
                     : 'border-white/5 opacity-25 scale-75 line-through'
                 }`}
                 style={{
-                  backgroundColor: color,
+                  backgroundColor: isStripe ? '#ffffff' : color,
                   color: num === 8 || num === 7 ? '#ffffff' : '#000000',
                   boxShadow: isActive ? `0 0 4px ${color}44` : 'none',
                 }}
               >
                 {/* Visual striping indicator */}
-                {isActive && isStripe && (
-                  <div className="absolute inset-0 bg-white/40 h-1/2 top-1/4 pointer-events-none z-0" />
+                {isStripe && (
+                  <div 
+                    className="absolute inset-x-0 h-1/2 top-1/4 pointer-events-none z-0" 
+                    style={{ backgroundColor: color }} 
+                  />
                 )}
-                <span className="relative z-10">{num}</span>
+                {isStripe ? (
+                  <div className="absolute w-2.5 h-2.5 rounded-full bg-white flex items-center justify-center z-10 shadow-[0_0.5px_1px_rgba(0,0,0,0.15)]">
+                    <span className="text-[6px] font-black text-black leading-none">{num}</span>
+                  </div>
+                ) : (
+                  <span className="relative z-10 leading-none">{num}</span>
+                )}
               </div>
             );
           })}
