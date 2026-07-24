@@ -25,7 +25,7 @@ export const CameraController: React.FC<CameraControllerProps> = ({ cueBallRef }
   }, []);
 
   useFrame(() => {
-    if (!cueBallRef.current || !orbitControlsRef.current) return;
+    if (!cueBallRef.current || !cueBallRef.current.isValid() || !orbitControlsRef.current) return;
 
     let translation;
     try {

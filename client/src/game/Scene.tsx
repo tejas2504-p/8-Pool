@@ -36,7 +36,7 @@ const TurnController: React.FC<{
     let anyBallMoving = false;
 
     // Check cue ball linear velocity
-    if (cueBallRef.current) {
+    if (cueBallRef.current && cueBallRef.current.isValid()) {
       const v = cueBallRef.current.linvel();
       const speed = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
       if (speed > 0.02) {
@@ -47,11 +47,13 @@ const TurnController: React.FC<{
     // Check object balls linear velocity
     if (!anyBallMoving) {
       for (const body of ballRefs.current.values()) {
-        const v = body.linvel();
-        const speed = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-        if (speed > 0.02) {
-          anyBallMoving = true;
-          break;
+        if (body && body.isValid()) {
+          const v = body.linvel();
+          const speed = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+          if (speed > 0.02) {
+            anyBallMoving = true;
+            break;
+          }
         }
       }
     }
@@ -79,7 +81,7 @@ const PhysicsConstraintController: React.FC<{
 }> = ({ cueBallRef, ballRefs }) => {
   useFrame(() => {
     // Cue Ball Y constraint (only if not pocketed/scratched, i.e., Y > -2)
-    if (cueBallRef.current) {
+    if (cueBallRef.current && cueBallRef.current.isValid()) {
       try {
         const body = cueBallRef.current;
         const pos = body.translation();
@@ -95,7 +97,7 @@ const PhysicsConstraintController: React.FC<{
 
     // Object Balls Y constraint
     for (const body of ballRefs.current.values()) {
-      if (body) {
+      if (body && body.isValid()) {
         try {
           const pos = body.translation();
           if (Math.abs(pos.y - 0.28) > 0.005) {
@@ -274,7 +276,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
       if (serverState.balls) {
         serverState.balls.forEach((sBall) => {
           const body = ballRefs.current.get(sBall.id);
-          if (body) {
+          if (body && body.isValid()) {
             if (!sBall.isActive) {
               body.setTranslation({ x: 100 + sBall.id, y: -10, z: 100 }, true);
               body.setLinvel({ x: 0, y: 0, z: 0 }, true);
@@ -300,7 +302,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
     audioManager.playPocket();
 
     const body = ballRefs.current.get(ballId);
-    if (body) {
+    if (body && body.isValid()) {
       try {
         const pos = body.translation();
         triggerPocketBurst(pos.x, 0.28, pos.z, ballId === 0 ? '#ffffff' : HUD_BALL_COLORS[ballId] || '#00f0ff');
@@ -315,7 +317,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
       if (!cueBallScratched) {
         setCueBallScratched(true);
         // Safely move cue ball out of sight & zero velocities
-        if (cueBallRef.current) {
+        if (cueBallRef.current && cueBallRef.current.isValid()) {
           try {
             cueBallRef.current.setTranslation({ x: 0, y: -10, z: 0 }, true);
             cueBallRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
@@ -333,7 +335,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
 
   // Reset cue ball back to starting spot
   const respawnCueBall = () => {
-    if (cueBallRef.current) {
+    if (cueBallRef.current && cueBallRef.current.isValid()) {
       cueBallRef.current.setTranslation(
         { x: PhysicsConstants.CUE_BALL_SPAWN[0], y: PhysicsConstants.CUE_BALL_SPAWN[1], z: PhysicsConstants.CUE_BALL_SPAWN[2] },
         true
@@ -357,7 +359,7 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
       status: 'break'
     });
     
-    if (cueBallRef.current) {
+    if (cueBallRef.current && cueBallRef.current.isValid()) {
       cueBallRef.current.setTranslation(
         { x: PhysicsConstants.CUE_BALL_SPAWN[0], y: PhysicsConstants.CUE_BALL_SPAWN[1], z: PhysicsConstants.CUE_BALL_SPAWN[2] },
         true
@@ -381,6 +383,9 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
   };
 
   const isGameOver = matchState.status === 'game-over';
+  const isLocalTurn = !roomId ||
+    (isHost && matchState.activePlayer === 'host') ||
+    (!isHost && matchState.activePlayer === 'guest');
 
   return (
     <div 
@@ -567,13 +572,64 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
           <span>🎯 Ball in Hand: Left-Click & Drag Cue Ball to place anywhere on the table</span>
         </div>
       ) : (
-        (turnState === 'idle' || turnState === 'aiming') && power === 0 && (
+        (turnState === 'idle' || turnState === 'aiming' || turnState === 'charging') && (
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-slate-900/70 backdrop-blur border border-white/5 rounded-full flex gap-3 text-[10px] font-bold text-slate-300 shadow-md select-none pointer-events-none">
-            <span>🖱️ Left-Click & Drag to Pullback</span>
+            <span>🖱️ Move Mouse to Aim</span>
+            <span className="text-white/20">|</span>
+            <span>🎛️ Scroll Wheel / W-S / Slider for Power</span>
             <span className="text-white/20">|</span>
             <span>🔄 Right-Click & Drag to Orbit Camera</span>
+            {power >= 5 && (
+              <>
+                <span className="text-white/20">|</span>
+                <span className="text-emerald-400 animate-pulse">🚀 Space to Strike!</span>
+              </>
+            )}
           </div>
         )
+      )}
+
+      {/* Vertical Power Slider (Right side of screen, only visible to active local player) */}
+      {!isSpectator && (turnState === 'idle' || turnState === 'aiming' || turnState === 'charging') && isLocalTurn && (
+        <div className="absolute right-6 top-16 bottom-16 w-14 flex flex-col items-center gap-3 z-30 select-none bg-slate-950/65 backdrop-blur-sm border border-white/5 p-2.5 rounded-2xl">
+          <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Power</span>
+          
+          {/* Vertical Slider Track */}
+          <div 
+            ref={powerTrackRef}
+            onPointerDown={handlePowerPointerDown}
+            onPointerMove={handlePowerPointerMove}
+            onPointerUp={handlePowerPointerUp}
+            className="w-4 bg-slate-900 border border-white/10 rounded-full flex-grow relative overflow-hidden cursor-ns-resize"
+          >
+            {/* Active filled power track with neon gradient */}
+            <div 
+              className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-pool-cyan via-pool-cyan to-rose-500 transition-all duration-75"
+              style={{ height: `${power}%` }}
+            />
+            {/* Sliding Thumb Indicator */}
+            <div 
+              className="absolute w-full h-1 bg-white border-t border-b border-pool-cyan shadow-[0_0_8px_#00f0ff] transition-all duration-75"
+              style={{ bottom: `calc(${power}% - 2px)` }}
+            />
+          </div>
+          
+          <span className="text-[9px] font-black text-slate-300 font-display leading-none">{power}%</span>
+
+          {/* Circular Neon Glowing Strike Button */}
+          <button
+            onClick={handleStrike}
+            disabled={power < 5}
+            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-black transition-all duration-300 ${
+              power >= 5
+                ? 'bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.45)] hover:scale-105 active:scale-95'
+                : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed opacity-50'
+            }`}
+            title="Press Space or click to shoot"
+          >
+            🚀
+          </button>
+        </div>
       )}
 
       {/* 6. Ball-in-Hand Confirmation HUD Button */}

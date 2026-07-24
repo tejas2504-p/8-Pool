@@ -20,7 +20,7 @@ export class GameSynchronizer {
   ): void {
     balls.forEach((sBall) => {
       const body = ballRefs.current.get(sBall.id);
-      if (body) {
+      if (body && body.isValid()) {
         if (!sBall.isActive) {
           // Relocate pocketed/inactive balls off-slate
           body.setTranslation({ x: 100 + sBall.id, y: -10, z: 100 }, true);

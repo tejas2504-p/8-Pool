@@ -10,7 +10,7 @@ export class ShotController {
     power: number,
     aimAngle: number
   ): void {
-    if (!cueBallRef.current) return;
+    if (!cueBallRef.current || !cueBallRef.current.isValid()) return;
 
     // Target angle is opposite to cue position
     const angle = aimAngle - Math.PI;

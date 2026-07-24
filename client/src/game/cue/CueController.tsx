@@ -34,6 +34,11 @@ export const CueController: React.FC<CueControllerProps> = ({
   const { gl } = useThree();
   const { world, rapier } = useRapier();
 
+  const matchState = gameManager.getState();
+  const isLocalTurn = !roomId ||
+    (isHost && matchState.activePlayer === 'host') ||
+    (!isHost && matchState.activePlayer === 'guest');
+
   const inputManagerRef = useRef<InputManager | null>(null);
   
   const cueStickRef = useRef<THREE.Group>(null);
@@ -122,10 +127,7 @@ export const CueController: React.FC<CueControllerProps> = ({
     };
   }, [gl, isLocalTurn, turnState, roomId, setPower, setTurnState]);
 
-  const matchState = gameManager.getState();
-  const isLocalTurn = !roomId ||
-    (isHost && matchState.activePlayer === 'host') ||
-    (!isHost && matchState.activePlayer === 'guest');
+
 
   // Activate/deactivate inputs depending on turnState and active player turn
   useEffect(() => {
@@ -178,6 +180,8 @@ export const CueController: React.FC<CueControllerProps> = ({
 
   // Helper to cast shape and render the smart aim line + deflection split vectors
   const updateSmartAimLine = (cueBallPos: THREE.Vector3) => {
+    if (!cueBallRef.current || !cueBallRef.current.isValid()) return;
+
     const aimLine = aimLineRef.current;
     if (!aimLine) return;
 
@@ -195,7 +199,7 @@ export const CueController: React.FC<CueControllerProps> = ({
     ).normalize();
 
     const shape = new rapier.Ball(0.18); // Ball radius 0.18
-    const cueBallCollider = cueBallRef.current?.collider(0);
+    const cueBallCollider = cueBallRef.current.collider(0);
 
     const hit = world.castShape(
       { x: cueBallPos.x, y: cueBallPos.y, z: cueBallPos.z },
@@ -237,7 +241,7 @@ export const CueController: React.FC<CueControllerProps> = ({
         ghost.position.copy(contactPos);
       }
 
-      if (isBall && hitColliderParent) {
+      if (isBall && hitColliderParent && hitColliderParent.isValid()) {
         let rawTargetPos;
         try {
           rawTargetPos = hitColliderParent.translation();
@@ -322,7 +326,7 @@ export const CueController: React.FC<CueControllerProps> = ({
   };
 
   useFrame((state, delta) => {
-    if (!cueBallRef.current || !inputManagerRef.current) return;
+    if (!cueBallRef.current || !cueBallRef.current.isValid() || !inputManagerRef.current) return;
 
     let translation;
     try {

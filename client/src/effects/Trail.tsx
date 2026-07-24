@@ -36,7 +36,7 @@ export const Trail: React.FC<TrailProps> = ({ targetRef, color = '#00f0ff', maxP
   }, [maxPoints, color]);
 
   useFrame(() => {
-    if (!targetRef.current || !line) return;
+    if (!targetRef.current || !targetRef.current.isValid() || !line) return;
 
     try {
       const translation = targetRef.current.translation();
