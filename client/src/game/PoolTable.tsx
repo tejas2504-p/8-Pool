@@ -126,20 +126,20 @@ const chromeMaterial = new THREE.MeshStandardMaterial({
 });
 
 // Reused Geometries
-const feltBedGeometry = new THREE.BoxGeometry(10, 0.2, 5);
+const feltBedGeometry = new THREE.BoxGeometry(12, 0.2, 6);
 const cornerPocketGeometry = new THREE.CylinderGeometry(0.26, 0.26, 0.1, 24);
 const middlePocketGeometry = new THREE.CylinderGeometry(0.24, 0.24, 0.1, 24);
 
-const horizontalRailGeometry = new THREE.BoxGeometry(10.8, 0.4, 0.4);
-const verticalRailGeometry = new THREE.BoxGeometry(0.4, 0.4, 5.8);
+const horizontalRailGeometry = new THREE.BoxGeometry(12.96, 0.4, 0.4);
+const verticalRailGeometry = new THREE.BoxGeometry(0.4, 0.4, 6.8);
 const tableLegGeometry = new THREE.BoxGeometry(0.5, 3.0, 0.5);
 
 // New Rims & Cushion Geometries
 const cornerRimGeometry = new THREE.RingGeometry(0.25, 0.29, 32);
 const middleRimGeometry = new THREE.RingGeometry(0.23, 0.27, 32);
 
-const horizontalCushionGeometry = new THREE.BoxGeometry(4.1, 0.2, 0.04);
-const verticalCushionGeometry = new THREE.BoxGeometry(0.04, 0.2, 3.8);
+const horizontalCushionGeometry = new THREE.BoxGeometry(4.92, 0.2, 0.04);
+const verticalCushionGeometry = new THREE.BoxGeometry(0.04, 0.2, 4.6);
 
 export const PoolTable: React.FC = () => {
   return (
@@ -156,42 +156,42 @@ export const PoolTable: React.FC = () => {
       {/* Sunken Pockets (Y=0.08 for realistic pocket drop) */}
       {/* Top-Left Corner */}
       <mesh 
-        position={[-4.8, 0.08, -2.3]}
+        position={[-5.76, 0.08, -2.76]}
         geometry={cornerPocketGeometry}
         material={pocketMaterial}
         frustumCulled={true}
       />
       {/* Top-Right Corner */}
       <mesh 
-        position={[4.8, 0.08, -2.3]}
+        position={[5.76, 0.08, -2.76]}
         geometry={cornerPocketGeometry}
         material={pocketMaterial}
         frustumCulled={true}
       />
       {/* Bottom-Left Corner */}
       <mesh 
-        position={[-4.8, 0.08, 2.3]}
+        position={[-5.76, 0.08, 2.76]}
         geometry={cornerPocketGeometry}
         material={pocketMaterial}
         frustumCulled={true}
       />
       {/* Bottom-Right Corner */}
       <mesh 
-        position={[4.8, 0.08, 2.3]}
+        position={[5.76, 0.08, 2.76]}
         geometry={cornerPocketGeometry}
         material={pocketMaterial}
         frustumCulled={true}
       />
       {/* Top-Middle */}
       <mesh 
-        position={[0, 0.08, -2.4]}
+        position={[0, 0.08, -2.88]}
         geometry={middlePocketGeometry}
         material={pocketMaterial}
         frustumCulled={true}
       />
       {/* Bottom-Middle */}
       <mesh 
-        position={[0, 0.08, 2.4]}
+        position={[0, 0.08, 2.88]}
         geometry={middlePocketGeometry}
         material={pocketMaterial}
         frustumCulled={true}
@@ -199,37 +199,37 @@ export const PoolTable: React.FC = () => {
 
       {/* Chrome Pocket Rims / Plates */}
       <mesh 
-        position={[-4.8, 0.201, -2.3]} 
+        position={[-5.76, 0.201, -2.76]} 
         rotation={[-Math.PI / 2, 0, 0]}
         geometry={cornerRimGeometry}
         material={chromeMaterial}
       />
       <mesh 
-        position={[4.8, 0.201, -2.3]} 
+        position={[5.76, 0.201, -2.76]} 
         rotation={[-Math.PI / 2, 0, 0]}
         geometry={cornerRimGeometry}
         material={chromeMaterial}
       />
       <mesh 
-        position={[-4.8, 0.201, 2.3]} 
+        position={[-5.76, 0.201, 2.76]} 
         rotation={[-Math.PI / 2, 0, 0]}
         geometry={cornerRimGeometry}
         material={chromeMaterial}
       />
       <mesh 
-        position={[4.8, 0.201, 2.3]} 
+        position={[5.76, 0.201, 2.76]} 
         rotation={[-Math.PI / 2, 0, 0]}
         geometry={cornerRimGeometry}
         material={chromeMaterial}
       />
       <mesh 
-        position={[0, 0.201, -2.4]} 
+        position={[0, 0.201, -2.88]} 
         rotation={[-Math.PI / 2, 0, 0]}
         geometry={middleRimGeometry}
         material={chromeMaterial}
       />
       <mesh 
-        position={[0, 0.201, 2.4]} 
+        position={[0, 0.201, 2.88]} 
         rotation={[-Math.PI / 2, 0, 0]}
         geometry={middleRimGeometry}
         material={chromeMaterial}
@@ -240,7 +240,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[0, 0.2, -2.7]}
+        position={[0, 0.2, -3.2]}
         geometry={horizontalRailGeometry}
         material={woodMaterial}
         frustumCulled={true}
@@ -249,7 +249,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[0, 0.2, 2.7]}
+        position={[0, 0.2, 3.2]}
         geometry={horizontalRailGeometry}
         material={woodMaterial}
         frustumCulled={true}
@@ -258,7 +258,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[-5.2, 0.2, 0]}
+        position={[-6.2, 0.2, 0]}
         geometry={verticalRailGeometry}
         material={woodMaterial}
         frustumCulled={true}
@@ -267,7 +267,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[5.2, 0.2, 0]}
+        position={[6.2, 0.2, 0]}
         geometry={verticalRailGeometry}
         material={woodMaterial}
         frustumCulled={true}
@@ -277,7 +277,7 @@ export const PoolTable: React.FC = () => {
       {/* Top-Left Cushion */}
       <mesh 
         receiveShadow 
-        position={[-2.4, 0.2, -2.52]}
+        position={[-2.88, 0.2, -3.02]}
         geometry={horizontalCushionGeometry}
         material={feltMaterial}
         frustumCulled={true}
@@ -285,7 +285,7 @@ export const PoolTable: React.FC = () => {
       {/* Top-Right Cushion */}
       <mesh 
         receiveShadow 
-        position={[2.4, 0.2, -2.52]}
+        position={[2.88, 0.2, -3.02]}
         geometry={horizontalCushionGeometry}
         material={feltMaterial}
         frustumCulled={true}
@@ -293,7 +293,7 @@ export const PoolTable: React.FC = () => {
       {/* Bottom-Left Cushion */}
       <mesh 
         receiveShadow 
-        position={[-2.4, 0.2, 2.52]}
+        position={[-2.88, 0.2, 3.02]}
         geometry={horizontalCushionGeometry}
         material={feltMaterial}
         frustumCulled={true}
@@ -301,7 +301,7 @@ export const PoolTable: React.FC = () => {
       {/* Bottom-Right Cushion */}
       <mesh 
         receiveShadow 
-        position={[2.4, 0.2, 2.52]}
+        position={[2.88, 0.2, 3.02]}
         geometry={horizontalCushionGeometry}
         material={feltMaterial}
         frustumCulled={true}
@@ -309,7 +309,7 @@ export const PoolTable: React.FC = () => {
       {/* Left Cushion */}
       <mesh 
         receiveShadow 
-        position={[-5.02, 0.2, 0]}
+        position={[-6.02, 0.2, 0]}
         geometry={verticalCushionGeometry}
         material={feltMaterial}
         frustumCulled={true}
@@ -317,7 +317,7 @@ export const PoolTable: React.FC = () => {
       {/* Right Cushion */}
       <mesh 
         receiveShadow 
-        position={[5.02, 0.2, 0]}
+        position={[6.02, 0.2, 0]}
         geometry={verticalCushionGeometry}
         material={feltMaterial}
         frustumCulled={true}
@@ -328,7 +328,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[-4.8, -1.5, -2.3]}
+        position={[-5.76, -1.5, -2.76]}
         geometry={tableLegGeometry}
         material={woodMaterial}
         frustumCulled={true}
@@ -337,7 +337,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[4.8, -1.5, -2.3]}
+        position={[5.76, -1.5, -2.76]}
         geometry={tableLegGeometry}
         material={woodMaterial}
         frustumCulled={true}
@@ -346,7 +346,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[-4.8, -1.5, 2.3]}
+        position={[-5.76, -1.5, 2.76]}
         geometry={tableLegGeometry}
         material={woodMaterial}
         frustumCulled={true}
@@ -355,7 +355,7 @@ export const PoolTable: React.FC = () => {
       <mesh 
         castShadow 
         receiveShadow 
-        position={[4.8, -1.5, 2.3]}
+        position={[5.76, -1.5, 2.76]}
         geometry={tableLegGeometry}
         material={woodMaterial}
         frustumCulled={true}
