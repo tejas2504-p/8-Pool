@@ -15,8 +15,8 @@ export class ShotController {
     // Target angle is opposite to cue position
     const angle = aimAngle - Math.PI;
     
-    // Scaling impulse for realistic gameplay feel (power 100 => impulse 12)
-    const forceMagnitude = power * 0.12;
+    // Scaling impulse for realistic gameplay feel (power 100 => impulse 7.5)
+    const forceMagnitude = power * 0.075;
 
     const impulse = new THREE.Vector3(
       Math.sin(angle) * forceMagnitude,
