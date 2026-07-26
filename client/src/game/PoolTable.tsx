@@ -9,8 +9,8 @@ const createFeltTexture = (): THREE.CanvasTexture => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return new THREE.CanvasTexture(canvas);
 
-  // Rich forest green felt
-  ctx.fillStyle = '#0f4c3a';
+  // Rich slate grey felt
+  ctx.fillStyle = '#3f4246';
   ctx.fillRect(0, 0, 1024, 512);
 
   // Add fine felt texture noise
@@ -66,14 +66,14 @@ const createWoodTexture = (): THREE.CanvasTexture => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return new THREE.CanvasTexture(canvas);
 
-  // Mahogany base
-  ctx.fillStyle = '#4c1a0c';
+  // Polished ebony/charcoal base
+  ctx.fillStyle = '#18181b';
   ctx.fillRect(0, 0, 512, 128);
 
-  // Wood grain lines
+  // Dark wood grain lines
   for (let i = 0; i < 45; i++) {
-    ctx.strokeStyle = `rgba(20, 5, 2, ${Math.random() * 0.2 + 0.05})`;
-    ctx.lineWidth = Math.random() * 4 + 1;
+    ctx.strokeStyle = `rgba(9, 9, 11, ${Math.random() * 0.25 + 0.1})`;
+    ctx.lineWidth = Math.random() * 3 + 1;
     const y = Math.random() * 128;
     ctx.beginPath();
     ctx.moveTo(0, y);
@@ -81,10 +81,10 @@ const createWoodTexture = (): THREE.CanvasTexture => {
     ctx.stroke();
   }
 
-  // Light highlights in grain
+  // Subtle grey highlights in grain
   for (let i = 0; i < 15; i++) {
-    ctx.strokeStyle = `rgba(120, 50, 20, ${Math.random() * 0.06})`;
-    ctx.lineWidth = Math.random() * 8 + 2;
+    ctx.strokeStyle = `rgba(63, 63, 70, ${Math.random() * 0.08})`;
+    ctx.lineWidth = Math.random() * 6 + 1.5;
     const y = Math.random() * 128;
     ctx.beginPath();
     ctx.moveTo(0, y);
