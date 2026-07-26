@@ -9,8 +9,8 @@ const createFeltTexture = (): THREE.CanvasTexture => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return new THREE.CanvasTexture(canvas);
 
-  // Rich camel-brown felt
-  ctx.fillStyle = '#8f6c4b';
+  // Rich forest green felt
+  ctx.fillStyle = '#0f4c3a';
   ctx.fillRect(0, 0, 1024, 512);
 
   // Add fine felt texture noise
