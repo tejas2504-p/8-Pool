@@ -41,13 +41,17 @@ router.get('/status', async (req: AuthRequest, res: Response): Promise<void> => 
     let canClaimToday = true;
     let currentStreak = record.streak;
 
+    const isDev = process.env.NODE_ENV !== 'production';
+    const cooldownHours = isDev ? 0.0028 : 20; // ~10 seconds in dev, 20 hours in prod
+    const streakResetHours = isDev ? 720 : 48; // 30 days in dev, 48 hours in prod
+
     if (record.lastClaimDate) {
       const last = new Date(record.lastClaimDate);
       const hoursDiff = (now.getTime() - last.getTime()) / (1000 * 60 * 60);
 
-      if (hoursDiff < 20) {
+      if (hoursDiff < cooldownHours) {
         canClaimToday = false;
-      } else if (hoursDiff > 48) {
+      } else if (hoursDiff > streakResetHours) {
         // Streak lost due to missing a day - reset
         currentStreak = 0;
         record.streak = 0;
@@ -88,7 +92,9 @@ router.post('/claim', async (req: AuthRequest, res: Response): Promise<void> => 
     const now = new Date();
     if (record.lastClaimDate) {
       const hoursDiff = (now.getTime() - new Date(record.lastClaimDate).getTime()) / (1000 * 60 * 60);
-      if (hoursDiff < 20) {
+      const isDev = process.env.NODE_ENV !== 'production';
+      const cooldownHours = isDev ? 0.0028 : 20; // ~10 seconds in dev, 20 hours in prod
+      if (hoursDiff < cooldownHours) {
         res.status(400).json({ message: 'Daily reward already claimed today. Come back tomorrow!' });
         return;
       }
