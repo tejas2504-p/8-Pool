@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { audioManager } from '../audio';
 
 export const Landing: React.FC = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');
+    }
     audioManager.startMusic('home');
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="max-w-md mx-auto text-center px-4 py-12 flex flex-col items-center justify-center">

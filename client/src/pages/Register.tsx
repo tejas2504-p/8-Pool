@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { api } from '../services/api';
@@ -11,6 +11,13 @@ export const Register: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const setUser = useGameStore((state) => state.setUser);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +58,10 @@ export const Register: React.FC = () => {
       if (token) {
         localStorage.setItem('token', token);
       }
+
+      // Save credentials for login page autofill
+      localStorage.setItem('remembered_username', returnedUsername);
+      localStorage.setItem('remember_me', 'true');
 
       // Update Zustand store
       setUser({

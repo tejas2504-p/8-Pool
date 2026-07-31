@@ -33,3 +33,6 @@ logs/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local DB fallback folder
+server/db_fallback/

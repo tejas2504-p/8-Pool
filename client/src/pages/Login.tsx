@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { api } from '../services/api';
 
 export const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(() => localStorage.getItem('remembered_username') || '');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(() => localStorage.getItem('remember_me') !== 'false');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const setUser = useGameStore((state) => state.setUser);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +44,15 @@ export const Login: React.FC = () => {
       // Save token to localStorage
       if (token) {
         localStorage.setItem('token', token);
+      }
+
+      // Remember credentials if checked
+      if (rememberMe) {
+        localStorage.setItem('remembered_username', username.trim());
+        localStorage.setItem('remember_me', 'true');
+      } else {
+        localStorage.removeItem('remembered_username');
+        localStorage.setItem('remember_me', 'false');
       }
 
       // Update Zustand store
@@ -107,6 +124,23 @@ export const Login: React.FC = () => {
             className="w-full px-4 py-3 bg-pool-dark/50 border border-white/10 focus:border-pool-cyan focus:outline-none rounded-xl text-white font-body transition-all duration-200 text-sm"
             disabled={isLoading}
           />
+        </div>
+
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="rememberMe"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="w-4 h-4 rounded border-white/10 bg-pool-dark/50 text-pool-cyan focus:ring-pool-cyan focus:ring-offset-0 focus:outline-none cursor-pointer"
+            disabled={isLoading}
+          />
+          <label
+            htmlFor="rememberMe"
+            className="ml-2.5 text-xs font-semibold text-slate-300 uppercase tracking-wider font-display cursor-pointer select-none"
+          >
+            Remember Me
+          </label>
         </div>
 
         <button
