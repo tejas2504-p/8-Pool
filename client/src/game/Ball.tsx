@@ -21,8 +21,9 @@ export const getBallMaterial = (number: number): THREE.MeshStandardMaterial => {
     const texture = getBallTexture(number);
     materialCache[number] = new THREE.MeshStandardMaterial({
       map: texture,
-      roughness: 0.28,
-      metalness: 0.0,
+      roughness: 0.45,
+      metalness: 0.05,
+      color: number === 0 ? '#b8b8b8' : '#a5a5a5',
     });
   }
   return materialCache[number];

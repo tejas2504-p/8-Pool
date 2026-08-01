@@ -135,11 +135,19 @@ export const CueController: React.FC<CueControllerProps> = ({
     if (!inputManager) return;
 
     if (isLocalTurn && (turnState === 'idle' || turnState === 'aiming' || turnState === 'charging')) {
-      inputManager.activate(() => {}); // Pass no-op callback since transitions are frame-driven
+      inputManager.activate(
+        (dragPower) => {
+          setPower(dragPower);
+        },
+        (finalPower) => {
+          setPower(finalPower);
+          setTurnState('shooting');
+        }
+      );
     } else {
       inputManager.deactivate();
     }
-  }, [turnState, isLocalTurn]);
+  }, [turnState, isLocalTurn, setPower, setTurnState]);
 
   // Sync opponent aiming angles from server
   useEffect(() => {

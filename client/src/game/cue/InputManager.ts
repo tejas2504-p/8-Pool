@@ -11,7 +11,10 @@ export class InputManager {
     this.gl = gl;
   }
 
-  public activate(onShotReady: (power: number) => void) {
+  public activate(
+    onPowerChange: (power: number) => void,
+    onShotReady: (power: number) => void
+  ) {
     if (this.active) return;
     this.active = true;
 
@@ -28,7 +31,11 @@ export class InputManager {
       if (this.isDragging) {
         const dragDist = e.clientY - this.startDragY;
         // 250px downward drag maps to 100% power
-        this.currentPower = Math.min(Math.max((dragDist / 250) * 100, 0), 100);
+        const nextPower = Math.min(Math.max((dragDist / 250) * 100, 0), 100);
+        if (nextPower !== this.currentPower) {
+          this.currentPower = nextPower;
+          onPowerChange(Math.round(nextPower));
+        }
       }
     };
 
@@ -37,10 +44,12 @@ export class InputManager {
       if (!this.isDragging) return;
 
       this.isDragging = false;
-      if (this.currentPower >= 5) {
-        onShotReady(this.currentPower);
+      const finalPower = Math.round(this.currentPower);
+      if (finalPower >= 5) {
+        onShotReady(finalPower);
       } else {
         this.currentPower = 0;
+        onPowerChange(0);
       }
     };
 
