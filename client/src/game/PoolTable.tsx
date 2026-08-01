@@ -138,8 +138,8 @@ const tableLegGeometry = new THREE.BoxGeometry(0.5, 3.0, 0.5);
 const cornerRimGeometry = new THREE.RingGeometry(0.25, 0.29, 32);
 const middleRimGeometry = new THREE.RingGeometry(0.23, 0.27, 32);
 
-const horizontalCushionGeometry = new THREE.BoxGeometry(4.92, 0.2, 0.04);
-const verticalCushionGeometry = new THREE.BoxGeometry(0.04, 0.2, 4.6);
+const horizontalCushionGeometry = new THREE.BoxGeometry(4.92, 0.2, 0.06);
+const verticalCushionGeometry = new THREE.BoxGeometry(0.06, 0.2, 4.6);
 
 export const PoolTable: React.FC = () => {
   return (

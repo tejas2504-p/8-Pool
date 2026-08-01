@@ -16,7 +16,8 @@ export const Lights: React.FC = () => {
         intensity={1.5}
         shadow-mapSize-width={shadowMapSize}
         shadow-mapSize-height={shadowMapSize}
-        shadow-bias={-0.0005}
+        shadow-bias={-0.0002}
+        shadow-normalBias={0.02}
         shadow-camera-far={40}
         shadow-camera-left={-8}
         shadow-camera-right={8}
