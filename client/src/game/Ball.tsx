@@ -11,12 +11,12 @@ interface BallProps {
 }
 
 // 1. REUSE GEOMETRY: Shared sphere geometry instantiated once at module scope
-const sphereGeometry = new THREE.SphereGeometry(0.18, 32, 32);
+export const sphereGeometry = new THREE.SphereGeometry(0.18, 32, 32);
 
 // 2. REUSE MATERIALS: Cached material instances mapped by ball number
 const materialCache: Record<number, THREE.MeshStandardMaterial> = {};
 
-const getBallMaterial = (number: number): THREE.MeshStandardMaterial => {
+export const getBallMaterial = (number: number): THREE.MeshStandardMaterial => {
   if (!materialCache[number]) {
     const texture = getBallTexture(number);
     materialCache[number] = new THREE.MeshStandardMaterial({

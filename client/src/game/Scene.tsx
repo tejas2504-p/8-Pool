@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { RapierRigidBody } from '@react-three/rapier';
+import gsap from 'gsap';
+import { sphereGeometry, getBallMaterial } from './Ball';
 import Lights from './Lights';
 import Environment from './Environment';
 import PoolTable from './PoolTable';
@@ -19,6 +21,52 @@ import LandscapePrompt from '../components/LandscapePrompt';
 import MobileControlsOverlay from '../components/MobileControlsOverlay';
 import useSettingsStore from '../store/useSettingsStore';
 import { BALL_COLORS } from '../utils/ballTexture';
+
+interface PocketingBallProps {
+  ballId: number;
+  startPosition: [number, number, number];
+  pocketPosition: [number, number, number];
+  onComplete: () => void;
+}
+
+const PocketingBall: React.FC<PocketingBallProps> = ({ ballId, startPosition, pocketPosition, onComplete }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useEffect(() => {
+    if (meshRef.current) {
+      // Smoothly animate the position to the center of the pocket and down
+      gsap.to(meshRef.current.position, {
+        x: pocketPosition[0],
+        z: pocketPosition[2],
+        y: startPosition[1] - 0.45,
+        duration: 0.45,
+        ease: 'power2.inOut',
+      });
+      // Shrink the ball to 0
+      gsap.to(meshRef.current.scale, {
+        x: 0,
+        y: 0,
+        z: 0,
+        duration: 0.45,
+        ease: 'power2.in',
+        onComplete,
+      });
+    }
+  }, [startPosition, pocketPosition, onComplete]);
+
+  const ballMaterial = getBallMaterial(ballId);
+
+  return (
+    <mesh
+      ref={meshRef}
+      position={startPosition}
+      geometry={sphereGeometry}
+      material={ballMaterial}
+      castShadow
+      receiveShadow
+    />
+  );
+};
 
 // Sub-component to monitor ball movement and reset turns on each physics frame
 const TurnController: React.FC<{
@@ -154,6 +202,16 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
   const [hasEntered, setHasEntered] = useState<boolean>(false);
   const [isPowerDragging, setIsPowerDragging] = useState(false);
   const powerTrackRef = useRef<HTMLDivElement>(null);
+  const [pocketingAnims, setPocketingAnims] = useState<Array<{
+    id: string;
+    ballId: number;
+    startPosition: [number, number, number];
+    pocketPosition: [number, number, number];
+  }>>([]);
+
+  const handleAnimComplete = (animId: string) => {
+    setPocketingAnims((prev) => prev.filter((a) => a.id !== animId));
+  };
 
   const updatePowerFromPointer = (e: React.PointerEvent<HTMLDivElement>) => {
     const track = powerTrackRef.current;
@@ -299,15 +357,33 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
   const handleBallPocketed = (ballId: number, pocketId: string) => {
     audioManager.playPocket();
 
+    let ballPosition: [number, number, number] = [0, 0.28, 0];
     const body = ballRefs.current.get(ballId);
     if (body && body.isValid()) {
       try {
         const pos = body.translation();
+        ballPosition = [pos.x, 0.28, pos.z];
         triggerPocketBurst(pos.x, 0.28, pos.z, ballId === 0 ? '#ffffff' : HUD_BALL_COLORS[ballId] || '#00f0ff');
       } catch (e) {
         // Safe guard
       }
     }
+
+    const pocket = PhysicsConstants.POCKETS.find((p) => p.id === pocketId);
+    const pocketPos: [number, number, number] = pocket 
+      ? [pocket.position[0], 0.28, pocket.position[2]] 
+      : ballPosition;
+
+    const animId = Math.random().toString(36).substring(2, 9);
+    setPocketingAnims((prev) => [
+      ...prev,
+      {
+        id: animId,
+        ballId,
+        startPosition: ballPosition,
+        pocketPosition: pocketPos,
+      },
+    ]);
 
     gameManagerRef.current.recordBallPocketed(ballId);
 
@@ -454,6 +530,15 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
             z={b.z}
             color={b.color}
             onComplete={() => clearBurst(b.id)}
+          />
+        ))}
+        {pocketingAnims.map((anim) => (
+          <PocketingBall
+            key={anim.id}
+            ballId={anim.ballId}
+            startPosition={anim.startPosition}
+            pocketPosition={anim.pocketPosition}
+            onComplete={() => handleAnimComplete(anim.id)}
           />
         ))}
       </Canvas>
