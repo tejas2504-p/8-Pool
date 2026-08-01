@@ -279,7 +279,7 @@ export const PoolTable: React.FC = () => {
         receiveShadow 
         position={[-2.88, 0.2, -3.02]}
         geometry={horizontalCushionGeometry}
-        material={feltMaterial}
+        material={woodMaterial}
         frustumCulled={true}
       />
       {/* Top-Right Cushion */}
@@ -287,7 +287,7 @@ export const PoolTable: React.FC = () => {
         receiveShadow 
         position={[2.88, 0.2, -3.02]}
         geometry={horizontalCushionGeometry}
-        material={feltMaterial}
+        material={woodMaterial}
         frustumCulled={true}
       />
       {/* Bottom-Left Cushion */}
@@ -295,7 +295,7 @@ export const PoolTable: React.FC = () => {
         receiveShadow 
         position={[-2.88, 0.2, 3.02]}
         geometry={horizontalCushionGeometry}
-        material={feltMaterial}
+        material={woodMaterial}
         frustumCulled={true}
       />
       {/* Bottom-Right Cushion */}
@@ -303,7 +303,7 @@ export const PoolTable: React.FC = () => {
         receiveShadow 
         position={[2.88, 0.2, 3.02]}
         geometry={horizontalCushionGeometry}
-        material={feltMaterial}
+        material={woodMaterial}
         frustumCulled={true}
       />
       {/* Left Cushion */}
@@ -311,7 +311,7 @@ export const PoolTable: React.FC = () => {
         receiveShadow 
         position={[-6.02, 0.2, 0]}
         geometry={verticalCushionGeometry}
-        material={feltMaterial}
+        material={woodMaterial}
         frustumCulled={true}
       />
       {/* Right Cushion */}
@@ -319,7 +319,7 @@ export const PoolTable: React.FC = () => {
         receiveShadow 
         position={[6.02, 0.2, 0]}
         geometry={verticalCushionGeometry}
-        material={feltMaterial}
+        material={woodMaterial}
         frustumCulled={true}
       />
 
