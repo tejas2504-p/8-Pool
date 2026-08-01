@@ -12,17 +12,17 @@ export const PhysicsConstants = {
   CUSHION_FRICTION: 0.1, // Friction along rails
 
   // Pocket coordinates matching the visual table structure (scaled by 1.2x)
-  // Corner pockets have radius 0.26, side/middle pockets have radius 0.24
+  // Corner pockets have radius 0.312, side/middle pockets have radius 0.288
   POCKETS: [
-    { id: 'top-left', position: [-5.76, 0.11, -2.76] as [number, number, number], radius: 0.26 },
-    { id: 'top-right', position: [5.76, 0.11, -2.76] as [number, number, number], radius: 0.26 },
-    { id: 'bottom-left', position: [-5.76, 0.11, 2.76] as [number, number, number], radius: 0.26 },
-    { id: 'bottom-right', position: [5.76, 0.11, 2.76] as [number, number, number], radius: 0.26 },
-    { id: 'top-middle', position: [0, 0.11, -2.88] as [number, number, number], radius: 0.24 },
-    { id: 'bottom-middle', position: [0, 0.11, 2.88] as [number, number, number], radius: 0.24 },
+    { id: 'top-left', position: [-6.912, 0.11, -3.312] as [number, number, number], radius: 0.312 },
+    { id: 'top-right', position: [6.912, 0.11, -3.312] as [number, number, number], radius: 0.312 },
+    { id: 'bottom-left', position: [-6.912, 0.11, 3.312] as [number, number, number], radius: 0.312 },
+    { id: 'bottom-right', position: [6.912, 0.11, 3.312] as [number, number, number], radius: 0.312 },
+    { id: 'top-middle', position: [0, 0.11, -3.456] as [number, number, number], radius: 0.288 },
+    { id: 'bottom-middle', position: [0, 0.11, 3.456] as [number, number, number], radius: 0.288 },
   ],
 
-  CUE_BALL_SPAWN: [-3.0, 0.28, 0] as [number, number, number],
+  CUE_BALL_SPAWN: [-3.6, 0.28, 0] as [number, number, number],
 };
 
 export default PhysicsConstants;

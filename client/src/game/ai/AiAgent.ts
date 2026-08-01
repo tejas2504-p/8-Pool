@@ -10,12 +10,12 @@ export interface AiShotDecision {
 }
 
 const POCKETS = [
-  { name: 'Top-Left', x: -5.4, z: -2.4 },
-  { name: 'Top-Right', x: 5.4, z: -2.4 },
-  { name: 'Bottom-Left', x: -5.4, z: 2.4 },
-  { name: 'Bottom-Right', x: 5.4, z: 2.4 },
-  { name: 'Side-Top', x: 0.0, z: -2.52 },
-  { name: 'Side-Bottom', x: 0.0, z: 2.52 },
+  { name: 'Top-Left', x: -6.48, z: -2.88 },
+  { name: 'Top-Right', x: 6.48, z: -2.88 },
+  { name: 'Bottom-Left', x: -6.48, z: 2.88 },
+  { name: 'Bottom-Right', x: 6.48, z: 2.88 },
+  { name: 'Side-Top', x: 0.0, z: -3.024 },
+  { name: 'Side-Bottom', x: 0.0, z: 3.024 },
 ];
 
 export class AiAgent {

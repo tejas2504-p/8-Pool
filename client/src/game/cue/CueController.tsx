@@ -352,8 +352,8 @@ export const CueController: React.FC<CueControllerProps> = ({
         state.raycaster.ray.intersectPlane(plane, target);
 
         // Clamp coordinates within play area cushions (scaled by 1.2x)
-        const clampedX = Math.min(Math.max(target.x, -5.62), 5.62);
-        const clampedZ = Math.min(Math.max(target.z, -2.62), 2.62);
+        const clampedX = Math.min(Math.max(target.x, -6.744), 6.744);
+        const clampedZ = Math.min(Math.max(target.z, -3.144), 3.144);
 
         cueBallRef.current.setTranslation({ x: clampedX, y: 0.28, z: clampedZ }, true);
         cueBallRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
