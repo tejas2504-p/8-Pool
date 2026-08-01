@@ -13,18 +13,28 @@ export class InputManager {
 
   public activate(
     onPowerChange: (power: number) => void,
-    onShotReady: (power: number) => void
+    onStrike: () => void
   ) {
     if (this.active) return;
     this.active = true;
 
+    let leftStartX = 0;
+    let leftStartY = 0;
+    let leftStartTime = 0;
+
     const handlePointerDown = (e: PointerEvent) => {
-      if (e.button !== 0) return; // Only left click
       if (e.target !== this.gl.domElement) return;
 
-      this.isDragging = true;
-      this.startDragY = e.clientY;
-      this.currentPower = 0;
+      if (e.button === 2) {
+        // Right click starts dragging for power
+        this.isDragging = true;
+        this.startDragY = e.clientY;
+      } else if (e.button === 0) {
+        // Left click down records starting positions for click detection
+        leftStartX = e.clientX;
+        leftStartY = e.clientY;
+        leftStartTime = performance.now();
+      }
     };
 
     const handlePointerMove = (e: PointerEvent) => {
@@ -40,16 +50,16 @@ export class InputManager {
     };
 
     const handlePointerUp = (e: PointerEvent) => {
-      if (e.button !== 0) return;
-      if (!this.isDragging) return;
-
-      this.isDragging = false;
-      const finalPower = Math.round(this.currentPower);
-      if (finalPower >= 5) {
-        onShotReady(finalPower);
-      } else {
-        this.currentPower = 0;
-        onPowerChange(0);
+      if (e.button === 2) {
+        // Right click release stops dragging
+        this.isDragging = false;
+      } else if (e.button === 0) {
+        // Left click up checks if it was a quick click to trigger the strike
+        const elapsed = performance.now() - leftStartTime;
+        const dist = Math.sqrt((e.clientX - leftStartX) ** 2 + (e.clientY - leftStartY) ** 2);
+        if (dist < 6 && elapsed < 350) {
+          onStrike();
+        }
       }
     };
 

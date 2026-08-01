@@ -62,9 +62,9 @@ export const CameraController: React.FC<CameraControllerProps> = ({ cueBallRef, 
         enableDamping
         dampingFactor={0.05}
         mouseButtons={{
-          LEFT: -1 as any, // Disable left-click camera rotation (used for shooting drag)
+          LEFT: THREE.MOUSE.ROTATE, // Use left-click to orbit camera
           MIDDLE: THREE.MOUSE.DOLLY,
-          RIGHT: THREE.MOUSE.ROTATE, // Use right-click to orbit camera
+          RIGHT: -1 as any, // Disable right-click camera rotation (used for power slider)
         }}
       />
     </>

@@ -139,9 +139,10 @@ export const CueController: React.FC<CueControllerProps> = ({
         (dragPower) => {
           setPower(dragPower);
         },
-        (finalPower) => {
-          setPower(finalPower);
-          setTurnState('shooting');
+        () => {
+          if (powerRef.current >= 5) {
+            setTurnState('shooting');
+          }
         }
       );
     } else {
