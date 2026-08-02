@@ -416,18 +416,7 @@ export const CueController: React.FC<CueControllerProps> = ({
     else if (turnState === 'charging') {
       pullbackRef.current = (power / 100) * 1.5;
 
-      // Allow aiming adjustment while charging
-      if (isLocalTurn) {
-        const currentAngle = InputManager.calculateAimAngle(state.raycaster, cueBallPos);
-        aimAngleRef.current = currentAngle;
-        
-        if (Math.abs(currentAngle - lastEmittedAngle.current) > 0.005) {
-          lastEmittedAngle.current = currentAngle;
-          if (roomId) {
-            socketService.emit('aim', { roomId, angle: currentAngle });
-          }
-        }
-      }
+      // Aiming adjustment is locked while charging/dragging for power
 
       // Position visual cue stick at pulled back coordinate
       if (cueStickRef.current) {
