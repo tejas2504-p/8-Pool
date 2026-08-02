@@ -4,29 +4,61 @@ import * as THREE from 'three';
 export const AimLine = forwardRef<THREE.Group>((_, ref) => {
   return (
     <group ref={ref} visible={false}>
-      {/* 1. Primary Aim Line (Thin solid white line) */}
-      <mesh name="primaryLine">
-        <boxGeometry args={[0.012, 0.001, 1]} />
-        <meshBasicMaterial color="#ffffff" transparent={true} opacity={0.8} />
-      </mesh>
+      {/* 1. Primary Aim Line (Dashed/Solid look with a dark border) */}
+      <group name="primaryLine">
+        {/* Dark outline */}
+        <mesh position={[0, -0.0002, 0]}>
+          <boxGeometry args={[0.036, 0.001, 1.002]} />
+          <meshBasicMaterial color="#111111" transparent={true} opacity={0.9} />
+        </mesh>
+        {/* White core */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[0.018, 0.0011, 1]} />
+          <meshBasicMaterial color="#ffffff" transparent={true} opacity={1.0} />
+        </mesh>
+      </group>
 
-      {/* 2. Ghost Ball representation at contact point - A clean flat horizontal ring */}
-      <mesh name="ghostBall" rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.172, 0.18, 64]} />
-        <meshBasicMaterial color="#ffffff" transparent={true} opacity={0.9} side={THREE.DoubleSide} />
-      </mesh>
+      {/* 2. Ghost Ball representation at contact point - A clean flat horizontal ring with dark outline */}
+      <group name="ghostBall" rotation={[-Math.PI / 2, 0, 0]}>
+        {/* Outer Dark Ring */}
+        <mesh position={[0, 0, -0.0002]}>
+          <ringGeometry args={[0.162, 0.19, 64]} />
+          <meshBasicMaterial color="#111111" transparent={true} opacity={0.95} side={THREE.DoubleSide} />
+        </mesh>
+        {/* Inner White Ring */}
+        <mesh position={[0, 0, 0]}>
+          <ringGeometry args={[0.172, 0.18, 64]} />
+          <meshBasicMaterial color="#ffffff" transparent={true} opacity={1.0} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
 
-      {/* 3. Target Ball Path line (Thin solid white line) */}
-      <mesh name="targetLine">
-        <boxGeometry args={[0.01, 0.001, 1]} />
-        <meshBasicMaterial color="#ffffff" transparent={true} opacity={0.8} />
-      </mesh>
+      {/* 3. Target Ball Path line (With a dark outline) */}
+      <group name="targetLine">
+        {/* Dark outline */}
+        <mesh position={[0, -0.0002, 0]}>
+          <boxGeometry args={[0.03, 0.001, 1.002]} />
+          <meshBasicMaterial color="#111111" transparent={true} opacity={0.9} />
+        </mesh>
+        {/* White core */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[0.015, 0.0011, 1]} />
+          <meshBasicMaterial color="#ffffff" transparent={true} opacity={1.0} />
+        </mesh>
+      </group>
 
-      {/* 4. Cue Ball Deflection line (Thin solid white line, slightly dimmer) */}
-      <mesh name="deflectionLine">
-        <boxGeometry args={[0.01, 0.001, 1]} />
-        <meshBasicMaterial color="#ffffff" transparent={true} opacity={0.4} />
-      </mesh>
+      {/* 4. Cue Ball Deflection line (With a dark outline, slightly dimmer/thinner) */}
+      <group name="deflectionLine">
+        {/* Dark outline */}
+        <mesh position={[0, -0.0002, 0]}>
+          <boxGeometry args={[0.024, 0.001, 1.002]} />
+          <meshBasicMaterial color="#111111" transparent={true} opacity={0.6} />
+        </mesh>
+        {/* White core */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[0.012, 0.0011, 1]} />
+          <meshBasicMaterial color="#ffffff" transparent={true} opacity={0.7} />
+        </mesh>
+      </group>
     </group>
   );
 });
