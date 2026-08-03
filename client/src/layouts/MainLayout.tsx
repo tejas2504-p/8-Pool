@@ -8,7 +8,7 @@ export const MainLayout: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-pool-dark text-slate-100 font-body">
       {/* Sticky Glassmorphic Header */}
       <header className="sticky top-0 z-50 py-3.5 px-6 bg-pool-dark/85 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <div className="max-w-[1440px] mx-auto flex justify-between items-center px-4 md:px-8">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🎱</span>
             <span className="font-display font-extrabold text-lg tracking-wider text-white">
@@ -28,7 +28,7 @@ export const MainLayout: React.FC = () => {
       </header>
 
       {/* Main Page Content */}
-      <main className="flex-grow flex flex-col justify-center max-w-6xl mx-auto w-full py-8">
+      <main className="flex-grow flex flex-col justify-center max-w-[1440px] mx-auto w-full px-4 md:px-8 py-8">
         <React.Suspense fallback={
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
             <div className="text-5xl mb-6 animate-bounce">🎱</div>

@@ -48,7 +48,7 @@ export const AiMatch: React.FC = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-purple-600/10 blur-[120px]" />
       </div>
 
-      <div ref={containerRef} className="relative z-10 max-w-5xl mx-auto px-4 pt-8">
+      <div ref={containerRef} className="relative z-10 max-w-[1300px] mx-auto px-4 pt-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
@@ -159,7 +159,7 @@ export const AiMatch: React.FC = () => {
             </div>
 
             {/* 3D Scene */}
-            <div className="my-2 max-w-4xl mx-auto">
+            <div className="my-2 max-w-[1200px] mx-auto">
               <ParticleProvider>
                 <Scene key={matchResetKey} isHost={true} />
               </ParticleProvider>

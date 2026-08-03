@@ -250,7 +250,7 @@ export const Game: React.FC = () => {
   // ─── PLAYING VIEW (GAME STARTED PLACEHOLDER) ───
   if (gameStarted || (isSpectator && currentRoom.status === 'playing')) {
     return (
-      <div className="max-w-4xl mx-auto w-full px-4 py-8">
+      <div className="max-w-[1300px] mx-auto w-full px-4 py-8">
         <div className="p-8 bg-slate-950 border border-white/10 rounded-2xl shadow-2xl relative overflow-hidden text-center">
           {/* Subtle neon glowing table border */}
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-pool-cyan via-pool-purple to-pool-cyan shadow-[0_0_15px_#00f0ff]" />
@@ -267,7 +267,7 @@ export const Game: React.FC = () => {
           </p>
 
           {/* 3D Scene Viewport rendered from structured boilerplate */}
-          <div className="my-8 max-w-3xl mx-auto">
+          <div className="my-8 max-w-[1200px] mx-auto">
             <ParticleProvider>
               <Scene roomId={roomId} isHost={!!isHost} isPractice={isPractice} isSpectator={!!isSpectator} />
             </ParticleProvider>
