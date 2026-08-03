@@ -134,7 +134,8 @@ const PhysicsConstraintController: React.FC<{
       try {
         const body = cueBallRef.current;
         const pos = body.translation();
-        if (pos.y > -2 && Math.abs(pos.y - 0.28) > 0.005) {
+        // Relaxed threshold to 0.15 to avoid resetting the physics contact solver during normal motion
+        if (pos.y > -2 && Math.abs(pos.y - 0.28) > 0.15) {
           body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
           const vel = body.linvel();
           body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
@@ -149,7 +150,8 @@ const PhysicsConstraintController: React.FC<{
       if (body && body.isValid()) {
         try {
           const pos = body.translation();
-          if (Math.abs(pos.y - 0.28) > 0.005) {
+          // Relaxed threshold to 0.15 to avoid resetting the physics contact solver during normal motion
+          if (Math.abs(pos.y - 0.28) > 0.15) {
             body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
             const vel = body.linvel();
             body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);

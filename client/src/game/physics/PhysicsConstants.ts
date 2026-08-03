@@ -3,7 +3,7 @@ export const PhysicsConstants = {
   BALL_RADIUS: 0.18,
   BALL_MASS: 1.0,
   BALL_RESTITUTION: 0.8, // Elasticity of ball-to-ball collisions
-  BALL_FRICTION: 0.05, // Surface slide friction
+  BALL_FRICTION: 0.15, // Surface slide friction
   BALL_LINEAR_DAMPING: 0.6, // Rolling resistance simulation (deceleration)
   BALL_ANGULAR_DAMPING: 0.6, // Spin drag simulation
 

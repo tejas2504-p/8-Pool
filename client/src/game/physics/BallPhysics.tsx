@@ -1,5 +1,5 @@
 import React, { forwardRef, ReactNode } from 'react';
-import { RigidBody, RapierRigidBody, RigidBodyProps } from '@react-three/rapier';
+import { RigidBody, RapierRigidBody, RigidBodyProps, BallCollider } from '@react-three/rapier';
 import { PhysicsConstants } from './PhysicsConstants';
 import { collisionManager } from './CollisionManager';
 
@@ -13,15 +13,14 @@ export const BallPhysics = forwardRef<RapierRigidBody, BallPhysicsProps>(
       <RigidBody
         ref={ref}
         type="dynamic"
-        colliders="ball"
+        colliders={false}
         position={position}
         mass={PhysicsConstants.BALL_MASS}
         restitution={PhysicsConstants.BALL_RESTITUTION}
         friction={PhysicsConstants.BALL_FRICTION}
         linearDamping={PhysicsConstants.BALL_LINEAR_DAMPING}
         angularDamping={PhysicsConstants.BALL_ANGULAR_DAMPING}
-        enabledTranslations={[true, false, true]}
-        enabledRotations={[false, false, false]}
+        enabledTranslations={[true, true, true]}
         ccd={true}
         onCollisionEnter={(event) => {
           // Route collision to manager
@@ -37,6 +36,7 @@ export const BallPhysics = forwardRef<RapierRigidBody, BallPhysicsProps>(
         }}
         {...props}
       >
+        <BallCollider args={[0.18]} />
         {children}
       </RigidBody>
     );
