@@ -2,14 +2,15 @@ export const PhysicsConstants = {
   // Ball specifications
   BALL_RADIUS: 0.18,
   BALL_MASS: 1.0,
-  BALL_RESTITUTION: 0.8, // Elasticity of ball-to-ball collisions
-  BALL_FRICTION: 0.15, // Surface slide friction
-  BALL_LINEAR_DAMPING: 0.6, // Rolling resistance simulation (deceleration)
-  BALL_ANGULAR_DAMPING: 0.6, // Spin drag simulation
+  BALL_RESTITUTION: 0.96, // Realistic phenolic resin elastic collisions (92%-98%)
+  BALL_FRICTION: 0.08, // Phenolic resin ball-to-ball friction (0.03-0.08)
+  BALL_LINEAR_DAMPING: 0.15, // Smooth rolling resistance on professional fast felt (Simonis 860)
+  BALL_ANGULAR_DAMPING: 0.20, // Spin decay rate allowing advanced draw/follow/sidespin (english)
 
-  // Table boundaries & cushions
-  CUSHION_RESTITUTION: 0.75, // Bounciness of pool table rails
-  CUSHION_FRICTION: 0.1, // Friction along rails
+  // Table felt & cushions
+  TABLE_FRICTION: 0.25, // Sliding friction on cloth to generate torque for rolling (0.15-0.40)
+  CUSHION_RESTITUTION: 0.82, // Professional lively gum rubber cushions (80%-90%)
+  CUSHION_FRICTION: 0.14, // Friction along rails (0.12-0.15)
 
   // Pocket coordinates matching the visual table structure (scaled by 1.2x)
   // Corner pockets have radius 0.312, side/middle pockets have radius 0.288
