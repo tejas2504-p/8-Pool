@@ -7,7 +7,7 @@ export const TablePhysics: React.FC = () => {
     <group>
       {/* Table Bed (Slate) Static Collider (scaled by 1.2x) */}
       {/* Size is [14.4, 0.2, 7.2], positioned at [0, 0, 0]. The top face is at Y = 0.1 */}
-      <RigidBody type="fixed" friction={PhysicsConstants.BALL_FRICTION} restitution={0.1}>
+      <RigidBody type="fixed" friction={PhysicsConstants.BALL_FRICTION} restitution={0.1} position={[0, -0.005, 0]}>
         <CuboidCollider args={[7.2, 0.1, 3.6]} position={[0, 0, 0]} />
       </RigidBody>
 
