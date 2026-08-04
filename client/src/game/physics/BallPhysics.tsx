@@ -15,12 +15,12 @@ export const BallPhysics = forwardRef<RapierRigidBody, BallPhysicsProps>(
         type="dynamic"
         colliders={false}
         position={position}
-        mass={PhysicsConstants.BALL_MASS}
         restitution={PhysicsConstants.BALL_RESTITUTION}
         friction={PhysicsConstants.BALL_FRICTION}
         linearDamping={PhysicsConstants.BALL_LINEAR_DAMPING}
         angularDamping={PhysicsConstants.BALL_ANGULAR_DAMPING}
         enabledTranslations={[true, true, true]}
+        enabledRotations={[true, true, true]}
         ccd={true}
         onCollisionEnter={(event) => {
           // Route collision to manager
@@ -36,7 +36,7 @@ export const BallPhysics = forwardRef<RapierRigidBody, BallPhysicsProps>(
         }}
         {...props}
       >
-        <BallCollider args={[0.18]} />
+        <BallCollider args={[PhysicsConstants.BALL_RADIUS]} mass={PhysicsConstants.BALL_MASS} />
         {children}
       </RigidBody>
     );

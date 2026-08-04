@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import * as THREE from 'three';
 import { RapierRigidBody } from '@react-three/rapier';
 import BallPhysics from './physics/BallPhysics';
+import { PhysicsConstants } from './physics/PhysicsConstants';
 import { getBallTexture } from '../utils/ballTexture';
 
 interface BallProps {
@@ -11,7 +12,7 @@ interface BallProps {
 }
 
 // 1. REUSE GEOMETRY: Shared sphere geometry instantiated once at module scope
-export const sphereGeometry = new THREE.SphereGeometry(0.18, 32, 32);
+export const sphereGeometry = new THREE.SphereGeometry(PhysicsConstants.BALL_RADIUS, 32, 32);
 
 // 2. REUSE MATERIALS: Cached material instances mapped by ball number
 const materialCache: Record<number, THREE.MeshStandardMaterial> = {};
