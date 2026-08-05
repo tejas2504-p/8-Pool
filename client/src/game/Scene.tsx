@@ -142,42 +142,28 @@ const PhysicsConstraintController: React.FC<{
         const pos = body.translation();
         if (pos.y > -2) {
           const vel = body.linvel();
-          const angvel = body.angvel();
           const speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
-          const spinSpeed = Math.sqrt(angvel.x * angvel.x + angvel.y * angvel.y + angvel.z * angvel.z);
 
-          if (speed < PhysicsConstants.SLEEP_LINEAR_THRESHOLD && spinSpeed < PhysicsConstants.SLEEP_ANGULAR_THRESHOLD) {
-            if (!body.isSleeping()) {
+          // 1. Natural rolling resistance extra decay at low speed to prevent infinite creep/chatter
+          if (speed < PhysicsConstants.DECEL_LINEAR_THRESHOLD) {
+            if (speed < PhysicsConstants.SLEEP_LINEAR_THRESHOLD) {
               body.setLinvel({ x: 0, y: 0, z: 0 }, true);
               body.setAngvel({ x: 0, y: 0, z: 0 }, true);
               body.sleep();
+            } else {
+              // Smoothly decelerate to a stop exponentially
+              body.setLinvel({
+                x: vel.x * PhysicsConstants.DECEL_DECAY_RATE,
+                y: vel.y,
+                z: vel.z * PhysicsConstants.DECEL_DECAY_RATE
+              }, true);
             }
-          } else {
-            // Apply strict Y and rolling constraints during active motion
-            // 1. Maintain Y position at exactly 0.28 and Y velocity at 0 to eliminate bounce/jitter
-            if (Math.abs(pos.y - 0.28) > 0.001) {
-              body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
-            }
-            if (vel.y !== 0) {
-              body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
-            }
-
-            // 2. Exponential decay for smooth deceleration at low speeds
-            let currentVelX = vel.x;
-            let currentVelZ = vel.z;
-            if (speed < PhysicsConstants.DECEL_LINEAR_THRESHOLD) {
-              currentVelX *= PhysicsConstants.DECEL_DECAY_RATE;
-              currentVelZ *= PhysicsConstants.DECEL_DECAY_RATE;
-              body.setLinvel({ x: currentVelX, y: 0, z: currentVelZ }, true);
-            }
-
-            // 3. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
-            const R = PhysicsConstants.BALL_RADIUS;
-            const targetAngvelX = -currentVelZ / R;
-            const targetAngvelZ = currentVelX / R;
-            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * PhysicsConstants.TABLE_GRIP_FACTOR;
-            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * PhysicsConstants.TABLE_GRIP_FACTOR;
-            body.setAngvel({ x: newAngvelX, y: angvel.y, z: newAngvelZ }, true);
+          }
+          
+          // 2. Loose fallback height safety to prevent balls from flying off the table in extreme cases
+          if (Math.abs(pos.y - 0.28) > 0.05) {
+            body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
+            body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
           }
         }
       } catch (e) {
@@ -191,42 +177,28 @@ const PhysicsConstraintController: React.FC<{
         try {
           const pos = body.translation();
           const vel = body.linvel();
-          const angvel = body.angvel();
           const speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
-          const spinSpeed = Math.sqrt(angvel.x * angvel.x + angvel.y * angvel.y + angvel.z * angvel.z);
 
-          if (speed < PhysicsConstants.SLEEP_LINEAR_THRESHOLD && spinSpeed < PhysicsConstants.SLEEP_ANGULAR_THRESHOLD) {
-            if (!body.isSleeping()) {
+          // 1. Natural rolling resistance extra decay at low speed to prevent infinite creep/chatter
+          if (speed < PhysicsConstants.DECEL_LINEAR_THRESHOLD) {
+            if (speed < PhysicsConstants.SLEEP_LINEAR_THRESHOLD) {
               body.setLinvel({ x: 0, y: 0, z: 0 }, true);
               body.setAngvel({ x: 0, y: 0, z: 0 }, true);
               body.sleep();
+            } else {
+              // Smoothly decelerate to a stop exponentially
+              body.setLinvel({
+                x: vel.x * PhysicsConstants.DECEL_DECAY_RATE,
+                y: vel.y,
+                z: vel.z * PhysicsConstants.DECEL_DECAY_RATE
+              }, true);
             }
-          } else {
-            // Apply strict Y and rolling constraints during active motion
-            // 1. Maintain Y position at exactly 0.28 and Y velocity at 0 to eliminate bounce/jitter
-            if (Math.abs(pos.y - 0.28) > 0.001) {
-              body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
-            }
-            if (vel.y !== 0) {
-              body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
-            }
-
-            // 2. Exponential decay for smooth deceleration at low speeds
-            let currentVelX = vel.x;
-            let currentVelZ = vel.z;
-            if (speed < PhysicsConstants.DECEL_LINEAR_THRESHOLD) {
-              currentVelX *= PhysicsConstants.DECEL_DECAY_RATE;
-              currentVelZ *= PhysicsConstants.DECEL_DECAY_RATE;
-              body.setLinvel({ x: currentVelX, y: 0, z: currentVelZ }, true);
-            }
-
-            // 3. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
-            const R = PhysicsConstants.BALL_RADIUS;
-            const targetAngvelX = -currentVelZ / R;
-            const targetAngvelZ = currentVelX / R;
-            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * PhysicsConstants.TABLE_GRIP_FACTOR;
-            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * PhysicsConstants.TABLE_GRIP_FACTOR;
-            body.setAngvel({ x: newAngvelX, y: angvel.y, z: newAngvelZ }, true);
+          }
+          
+          // 2. Loose fallback height safety to prevent balls from flying off the table in extreme cases
+          if (Math.abs(pos.y - 0.28) > 0.05) {
+            body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
+            body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
           }
         } catch (e) {
           // Safe guard
