@@ -22,9 +22,9 @@ export const getBallMaterial = (number: number): THREE.MeshStandardMaterial => {
     const texture = getBallTexture(number);
     materialCache[number] = new THREE.MeshStandardMaterial({
       map: texture,
-      roughness: 0.45,
-      metalness: 0.05,
-      color: number === 0 ? '#b8b8b8' : '#a5a5a5',
+      roughness: 0.08, // Highly polished glossy resin surface
+      metalness: 0.02, // Clean specular reflections without metallic darkening
+      color: '#ffffff', // Render textures at full, vibrant color fidelity
     });
   }
   return materialCache[number];

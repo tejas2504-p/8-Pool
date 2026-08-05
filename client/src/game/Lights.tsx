@@ -9,22 +9,28 @@ export const Lights: React.FC = () => {
 
   return (
     <>
-      <ambientLight intensity={0.6} />
+      {/* Dim room ambiance to make the table pop */}
+      <ambientLight intensity={0.35} />
+
+      {/* Main overhead downward light representing the tournament table light fixture */}
       <directionalLight
         castShadow={castShadows}
-        position={[4, 12, 4]}
-        intensity={1.5}
+        position={[0, 8, 0]}
+        intensity={2.2}
         shadow-mapSize-width={shadowMapSize}
         shadow-mapSize-height={shadowMapSize}
         shadow-bias={-0.0002}
         shadow-normalBias={0.02}
-        shadow-camera-far={40}
-        shadow-camera-left={-8}
-        shadow-camera-right={8}
-        shadow-camera-top={8}
-        shadow-camera-bottom={-8}
+        shadow-camera-far={15}
+        shadow-camera-left={-7.5}
+        shadow-camera-right={7.5}
+        shadow-camera-top={4}
+        shadow-camera-bottom={-4}
       />
-      <pointLight position={[-8, 8, -8]} intensity={0.4} />
+
+      {/* Soft color-bounced fill point lights from sides */}
+      <pointLight position={[-4, 5, -2]} intensity={0.4} color="#e0f2fe" />
+      <pointLight position={[4, 5, 2]} intensity={0.4} color="#ffedd5" />
     </>
   );
 };

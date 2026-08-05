@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { RapierRigidBody } from '@react-three/rapier';
 import gsap from 'gsap';
+import { ContactShadows } from '@react-three/drei';
 import { sphereGeometry, getBallMaterial } from './Ball';
 import Lights from './Lights';
 import Environment from './Environment';
@@ -546,7 +547,11 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
       <Canvas 
         shadows={graphicsQuality !== 'low'}
         dpr={graphicsQuality === 'low' ? 1 : [1, 2]}
-        gl={{ antialias: graphicsQuality !== 'low', powerPreference: 'high-performance' }}
+        gl={{ 
+          antialias: graphicsQuality !== 'low', 
+          toneMapping: THREE.ACESFilmicToneMapping, 
+          powerPreference: 'high-performance' 
+        }}
       >
         {/* <FpsLimiter /> */}
         <CameraController 
@@ -559,6 +564,15 @@ export const Scene: React.FC<{ roomId?: string; isHost?: boolean; isPractice?: b
           <PoolTable />
           <TablePhysics />
           <PocketSensor onBallPocketed={handleBallPocketed} />
+          {/* Grounding contact shadows directly under the balls */}
+          <ContactShadows
+            position={[0, 0.102, 0]}
+            opacity={0.65}
+            scale={15}
+            blur={1.4}
+            far={0.3}
+            resolution={512}
+          />
           <Balls 
             activeBalls={activeBalls} 
             cueBallRef={cueBallRef} 
