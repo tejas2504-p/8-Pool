@@ -84,22 +84,27 @@ const TurnController: React.FC<{
 
     let anyBallMoving = false;
 
-    // Check cue ball linear velocity
+    // Check cue ball linear/angular velocity and sleeping state
     if (cueBallRef.current && cueBallRef.current.isValid()) {
-      const v = cueBallRef.current.linvel();
+      const body = cueBallRef.current;
+      const v = body.linvel();
       const speed = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-      if (speed > 0.02) {
+      const av = body.angvel();
+      const spin = Math.sqrt(av.x * av.x + av.y * av.y + av.z * av.z);
+      if (!body.isSleeping() && (speed > PhysicsConstants.SLEEP_LINEAR_THRESHOLD || spin > PhysicsConstants.SLEEP_ANGULAR_THRESHOLD)) {
         anyBallMoving = true;
       }
     }
 
-    // Check object balls linear velocity
+    // Check object balls linear/angular velocity and sleeping state
     if (!anyBallMoving) {
       for (const body of ballRefs.current.values()) {
         if (body && body.isValid()) {
           const v = body.linvel();
           const speed = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-          if (speed > 0.02) {
+          const av = body.angvel();
+          const spin = Math.sqrt(av.x * av.x + av.y * av.y + av.z * av.z);
+          if (!body.isSleeping() && (speed > PhysicsConstants.SLEEP_LINEAR_THRESHOLD || spin > PhysicsConstants.SLEEP_ANGULAR_THRESHOLD)) {
             anyBallMoving = true;
             break;
           }
@@ -123,37 +128,57 @@ const TurnController: React.FC<{
   return null;
 };
 
-// Constrains balls to the 2D table plane (XZ) by resetting Y coordinates and zeroing vertical velocities
+// Constrains balls to the 2D table plane (XZ) and enforces custom sleeping velocity thresholds
 const PhysicsConstraintController: React.FC<{
   cueBallRef: React.RefObject<RapierRigidBody | null>;
   ballRefs: React.MutableRefObject<Map<number, RapierRigidBody>>;
 }> = ({ cueBallRef, ballRefs }) => {
   useFrame(() => {
-    // Cue Ball Y constraint (only if not pocketed/scratched, i.e., Y > -2)
+    // Cue Ball constraints and manual sleeping threshold (only if not pocketed/scratched, i.e., Y > -2)
     if (cueBallRef.current && cueBallRef.current.isValid()) {
       try {
         const body = cueBallRef.current;
         const pos = body.translation();
-        // Relaxed threshold to 0.15 to avoid resetting the physics contact solver during normal motion
-        if (pos.y > -2 && Math.abs(pos.y - 0.28) > 0.15) {
-          body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
+        if (pos.y > -2) {
           const vel = body.linvel();
-          body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+          const angvel = body.angvel();
+          const speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
+          const spinSpeed = Math.sqrt(angvel.x * angvel.x + angvel.y * angvel.y + angvel.z * angvel.z);
+
+          if (speed < PhysicsConstants.SLEEP_LINEAR_THRESHOLD && spinSpeed < PhysicsConstants.SLEEP_ANGULAR_THRESHOLD) {
+            if (!body.isSleeping()) {
+              body.setLinvel({ x: 0, y: 0, z: 0 }, true);
+              body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+              body.sleep();
+            }
+          } else if (Math.abs(pos.y - 0.28) > 0.15) {
+            body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
+            body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+          }
         }
       } catch (e) {
         // Safe guard
       }
     }
 
-    // Object Balls Y constraint
+    // Object Balls constraints and manual sleeping threshold
     for (const body of ballRefs.current.values()) {
       if (body && body.isValid()) {
         try {
           const pos = body.translation();
-          // Relaxed threshold to 0.15 to avoid resetting the physics contact solver during normal motion
-          if (Math.abs(pos.y - 0.28) > 0.15) {
+          const vel = body.linvel();
+          const angvel = body.angvel();
+          const speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
+          const spinSpeed = Math.sqrt(angvel.x * angvel.x + angvel.y * angvel.y + angvel.z * angvel.z);
+
+          if (speed < PhysicsConstants.SLEEP_LINEAR_THRESHOLD && spinSpeed < PhysicsConstants.SLEEP_ANGULAR_THRESHOLD) {
+            if (!body.isSleeping()) {
+              body.setLinvel({ x: 0, y: 0, z: 0 }, true);
+              body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+              body.sleep();
+            }
+          } else if (Math.abs(pos.y - 0.28) > 0.15) {
             body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
-            const vel = body.linvel();
             body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
           }
         } catch (e) {
