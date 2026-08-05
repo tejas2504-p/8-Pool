@@ -13,6 +13,10 @@ export const PhysicsWorld: React.FC<PhysicsWorldProps> = ({ children }) => {
       numSolverIterations={PhysicsConstants.SOLVER_ITERATIONS}
       numInternalPgsIterations={PhysicsConstants.INTERNAL_PGS_ITERATIONS}
       maxCcdSubsteps={PhysicsConstants.MAX_CCD_SUBSTEPS}
+      allowedLinearError={PhysicsConstants.ALLOWED_LINEAR_ERROR}
+      contactNaturalFrequency={PhysicsConstants.CONTACT_NATURAL_FREQUENCY}
+      timeStep={1 / 60}
+      interpolate={true}
     >
       {children}
     </Physics>

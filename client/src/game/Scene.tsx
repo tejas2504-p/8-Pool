@@ -161,12 +161,21 @@ const PhysicsConstraintController: React.FC<{
               body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
             }
 
-            // 2. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
+            // 2. Exponential decay for smooth deceleration at low speeds
+            let currentVelX = vel.x;
+            let currentVelZ = vel.z;
+            if (speed < PhysicsConstants.DECEL_LINEAR_THRESHOLD) {
+              currentVelX *= PhysicsConstants.DECEL_DECAY_RATE;
+              currentVelZ *= PhysicsConstants.DECEL_DECAY_RATE;
+              body.setLinvel({ x: currentVelX, y: 0, z: currentVelZ }, true);
+            }
+
+            // 3. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
             const R = PhysicsConstants.BALL_RADIUS;
-            const targetAngvelX = -vel.z / R;
-            const targetAngvelZ = vel.x / R;
-            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * 0.20;
-            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * 0.20;
+            const targetAngvelX = -currentVelZ / R;
+            const targetAngvelZ = currentVelX / R;
+            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * PhysicsConstants.TABLE_GRIP_FACTOR;
+            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * PhysicsConstants.TABLE_GRIP_FACTOR;
             body.setAngvel({ x: newAngvelX, y: angvel.y, z: newAngvelZ }, true);
           }
         }
@@ -201,12 +210,21 @@ const PhysicsConstraintController: React.FC<{
               body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
             }
 
-            // 2. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
+            // 2. Exponential decay for smooth deceleration at low speeds
+            let currentVelX = vel.x;
+            let currentVelZ = vel.z;
+            if (speed < PhysicsConstants.DECEL_LINEAR_THRESHOLD) {
+              currentVelX *= PhysicsConstants.DECEL_DECAY_RATE;
+              currentVelZ *= PhysicsConstants.DECEL_DECAY_RATE;
+              body.setLinvel({ x: currentVelX, y: 0, z: currentVelZ }, true);
+            }
+
+            // 3. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
             const R = PhysicsConstants.BALL_RADIUS;
-            const targetAngvelX = -vel.z / R;
-            const targetAngvelZ = vel.x / R;
-            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * 0.20;
-            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * 0.20;
+            const targetAngvelX = -currentVelZ / R;
+            const targetAngvelZ = currentVelX / R;
+            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * PhysicsConstants.TABLE_GRIP_FACTOR;
+            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * PhysicsConstants.TABLE_GRIP_FACTOR;
             body.setAngvel({ x: newAngvelX, y: angvel.y, z: newAngvelZ }, true);
           }
         } catch (e) {

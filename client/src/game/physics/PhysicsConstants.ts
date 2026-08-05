@@ -12,14 +12,19 @@ export const PhysicsConstants = {
   CUSHION_RESTITUTION: 0.72, // Professional lively gum rubber cushions rebound (70%-80%)
   CUSHION_FRICTION: 0.14, // Friction along rails (0.12-0.15)
 
-  // Custom sleeping thresholds (to bring slow sliding/rolling to a clean halt)
-  SLEEP_LINEAR_THRESHOLD: 0.06, // Linear velocity below which ball is forced to sleep (m/s)
-  SLEEP_ANGULAR_THRESHOLD: 0.10, // Spin velocity below which ball spin is zeroed out (rad/s)
+  // Custom sleeping & deceleration thresholds (to bring slow rolling to a buttery smooth halt)
+  SLEEP_LINEAR_THRESHOLD: 0.02, // Linear velocity below which ball is snapped to sleep (m/s)
+  SLEEP_ANGULAR_THRESHOLD: 0.05, // Spin velocity below which ball spin is zeroed out (rad/s)
+  DECEL_LINEAR_THRESHOLD: 0.15, // Speed threshold below which exponential deceleration decay begins (m/s)
+  DECEL_DECAY_RATE: 0.85, // Velocity scale multiplier per frame during deceleration (0.0 to 1.0)
+  TABLE_GRIP_FACTOR: 0.20, // Grip coefficient blending sliding-to-rolling angular velocities per frame
 
   // Simulation / Solver parameters
   SOLVER_ITERATIONS: 20, // High solver iterations for precise contact resolution, preventing overlap
   INTERNAL_PGS_ITERATIONS: 8, // PGS iterations for contact stability
   MAX_CCD_SUBSTEPS: 10, // Continuous Collision Detection substeps to prevent tunneling at high speeds
+  ALLOWED_LINEAR_ERROR: 0.0001, // Correct contact penetration down to 0.1mm for ultra-rigid collisions
+  CONTACT_NATURAL_FREQUENCY: 40, // Increase constraints stiffness, avoiding rail/ball overlaps
 
   // Pocket coordinates matching the visual table structure (scaled by 1.2x)
   // Corner pockets have radius 0.312, side/middle pockets have radius 0.288
