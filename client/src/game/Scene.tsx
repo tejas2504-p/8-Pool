@@ -151,9 +151,23 @@ const PhysicsConstraintController: React.FC<{
               body.setAngvel({ x: 0, y: 0, z: 0 }, true);
               body.sleep();
             }
-          } else if (Math.abs(pos.y - 0.28) > 0.15) {
-            body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
-            body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+          } else {
+            // Apply strict Y and rolling constraints during active motion
+            // 1. Maintain Y position at exactly 0.28 and Y velocity at 0 to eliminate bounce/jitter
+            if (Math.abs(pos.y - 0.28) > 0.001) {
+              body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
+            }
+            if (vel.y !== 0) {
+              body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+            }
+
+            // 2. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
+            const R = PhysicsConstants.BALL_RADIUS;
+            const targetAngvelX = -vel.z / R;
+            const targetAngvelZ = vel.x / R;
+            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * 0.20;
+            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * 0.20;
+            body.setAngvel({ x: newAngvelX, y: angvel.y, z: newAngvelZ }, true);
           }
         }
       } catch (e) {
@@ -177,9 +191,23 @@ const PhysicsConstraintController: React.FC<{
               body.setAngvel({ x: 0, y: 0, z: 0 }, true);
               body.sleep();
             }
-          } else if (Math.abs(pos.y - 0.28) > 0.15) {
-            body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
-            body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+          } else {
+            // Apply strict Y and rolling constraints during active motion
+            // 1. Maintain Y position at exactly 0.28 and Y velocity at 0 to eliminate bounce/jitter
+            if (Math.abs(pos.y - 0.28) > 0.001) {
+              body.setTranslation({ x: pos.x, y: 0.28, z: pos.z }, true);
+            }
+            if (vel.y !== 0) {
+              body.setLinvel({ x: vel.x, y: 0, z: vel.z }, true);
+            }
+
+            // 2. Programmatically blend angular velocity toward pure rolling velocity to simulate sliding-to-rolling friction transition
+            const R = PhysicsConstants.BALL_RADIUS;
+            const targetAngvelX = -vel.z / R;
+            const targetAngvelZ = vel.x / R;
+            const newAngvelX = angvel.x + (targetAngvelX - angvel.x) * 0.20;
+            const newAngvelZ = angvel.z + (targetAngvelZ - angvel.z) * 0.20;
+            body.setAngvel({ x: newAngvelX, y: angvel.y, z: newAngvelZ }, true);
           }
         } catch (e) {
           // Safe guard

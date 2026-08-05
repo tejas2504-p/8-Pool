@@ -1,13 +1,13 @@
 import React from 'react';
-import { RigidBody, CuboidCollider } from '@react-three/rapier';
+import { RigidBody, CuboidCollider, CoefficientCombineRule } from '@react-three/rapier';
 import { PhysicsConstants } from './PhysicsConstants';
 
 export const TablePhysics: React.FC = () => {
   return (
     <group>
       {/* Table Bed (Slate) Static Collider (scaled by 1.2x) */}
-      {/* Size is [14.4, 0.2, 7.2], positioned at [0, 0, 0]. The top face is at Y = 0.1 */}
-      <RigidBody type="fixed" friction={PhysicsConstants.TABLE_FRICTION} restitution={0.1} position={[0, -0.005, 0]}>
+      {/* Size is [14.4, 0.2, 7.2], positioned at [0, 0, 0]. The top face is at Y = 0.10 */}
+      <RigidBody type="fixed" friction={PhysicsConstants.TABLE_FRICTION} restitution={0.1} position={[0, 0, 0]}>
         <CuboidCollider args={[7.2, 0.1, 3.6]} position={[0, 0, 0]} />
       </RigidBody>
 
@@ -17,6 +17,7 @@ export const TablePhysics: React.FC = () => {
         type="fixed" 
         restitution={PhysicsConstants.CUSHION_RESTITUTION} 
         friction={PhysicsConstants.CUSHION_FRICTION}
+        restitutionCombineRule={CoefficientCombineRule.Multiply}
       >
         {/* Top-Left Rail Segment */}
         {/* Collider half-sizes: X=3.024, Y=0.2, Z=0.24. Centered at [-3.456, 0.2, -3.84] */}

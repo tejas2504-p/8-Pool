@@ -21,6 +21,7 @@ export const BallPhysics = forwardRef<RapierRigidBody, BallPhysicsProps>(
         angularDamping={PhysicsConstants.BALL_ANGULAR_DAMPING}
         enabledTranslations={[true, true, true]}
         enabledRotations={[true, true, true]}
+        gravityScale={0}
         canSleep={true}
         ccd={true}
         onCollisionEnter={(event) => {
