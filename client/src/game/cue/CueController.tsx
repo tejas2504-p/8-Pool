@@ -371,16 +371,64 @@ export const CueController: React.FC<CueControllerProps> = ({
       return; // Suspend standard aiming/power charging during placement
     }
 
+    // Dynamic power charging by dragging the stick backward
+    if (isLocalTurn && inputManager.getIsDragging()) {
+      const startDrag = inputManager.getStartDragPos();
+      const currentDrag = inputManager.getCurrentDragPos();
+      const camera = state.camera;
+
+      // Stick backward direction in 3D (away from shot target direction)
+      const stickDir3D = new THREE.Vector3(
+        Math.sin(aimAngleRef.current),
+        0,
+        Math.cos(aimAngleRef.current)
+      );
+
+      // Project cue ball and 1-unit backward position to 2D viewport coordinates
+      const screenCb = cueBallPos.clone().project(camera);
+      const screenBack = cueBallPos.clone().addScaledVector(stickDir3D, 1.0).project(camera);
+
+      // Convert NDC to window pixels
+      const pxCb = new THREE.Vector2(
+        (screenCb.x * 0.5 + 0.5) * window.innerWidth,
+        (1 - (screenCb.y * 0.5 + 0.5)) * window.innerHeight
+      );
+      const pxBack = new THREE.Vector2(
+        (screenBack.x * 0.5 + 0.5) * window.innerWidth,
+        (1 - (screenBack.y * 0.5 + 0.5)) * window.innerHeight
+      );
+
+      const screenStickDir = new THREE.Vector2().subVectors(pxBack, pxCb).normalize();
+      const dragVec = new THREE.Vector2(
+        currentDrag.x - startDrag.x,
+        currentDrag.y - startDrag.y
+      );
+
+      // Calculate pullback component
+      const pullbackPixels = dragVec.dot(screenStickDir);
+
+      // Map pullback to power (e.g. 250px = 100% power)
+      const calculatedPower = Math.min(Math.max((pullbackPixels / 250) * 100, 0), 100);
+      const roundedPower = Math.round(calculatedPower);
+
+      if (roundedPower !== powerRef.current) {
+        setPower(roundedPower);
+        inputManager.setCurrentPower(roundedPower);
+      }
+    }
+
     // A. Handle Idle / Aiming states
     if (turnState === 'idle' || turnState === 'aiming') {
       let currentAngle = aimAngleRef.current;
-      if (isLocalTurn) {
+      const isAimLocked = inputManager.getIsDragging() || powerRef.current > 0;
+
+      if (isLocalTurn && !isAimLocked) {
         currentAngle = InputManager.calculateAimAngle(state.raycaster, cueBallPos);
       }
       
       const angleDiff = Math.abs(currentAngle - aimAngleRef.current);
       
-      if (isLocalTurn) {
+      if (isLocalTurn && !isAimLocked) {
         aimAngleRef.current = currentAngle;
         
         // Throttled emit to avoid overloading socket link

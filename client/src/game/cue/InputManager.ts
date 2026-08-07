@@ -2,7 +2,10 @@ import * as THREE from 'three';
 
 export class InputManager {
   private isDragging = false;
+  private startDragX = 0;
   private startDragY = 0;
+  private currentDragX = 0;
+  private currentDragY = 0;
   private currentPower = 0;
   private gl: THREE.WebGLRenderer;
   private active = false;
@@ -25,12 +28,15 @@ export class InputManager {
     const handlePointerDown = (e: PointerEvent) => {
       if (e.target !== this.gl.domElement) return;
 
-      if (e.button === 2) {
-        // Right click starts dragging for power
+      if (e.button === 0) {
+        // Left click starts dragging for power
         this.isDragging = true;
+        this.startDragX = e.clientX;
         this.startDragY = e.clientY;
-      } else if (e.button === 0) {
-        // Left click down records starting positions for click detection
+        this.currentDragX = e.clientX;
+        this.currentDragY = e.clientY;
+        this.currentPower = 0;
+        
         leftStartX = e.clientX;
         leftStartY = e.clientY;
         leftStartTime = performance.now();
@@ -39,25 +45,28 @@ export class InputManager {
 
     const handlePointerMove = (e: PointerEvent) => {
       if (this.isDragging) {
-        const dragDist = e.clientY - this.startDragY;
-        // 250px downward drag maps to 100% power
-        const nextPower = Math.min(Math.max((dragDist / 250) * 100, 0), 100);
-        if (nextPower !== this.currentPower) {
-          this.currentPower = nextPower;
-          onPowerChange(Math.round(nextPower));
-        }
+        this.currentDragX = e.clientX;
+        this.currentDragY = e.clientY;
       }
     };
 
     const handlePointerUp = (e: PointerEvent) => {
-      if (e.button === 2) {
-        // Right click release stops dragging
+      if (e.button === 0) {
+        const wasDragging = this.isDragging;
         this.isDragging = false;
-      } else if (e.button === 0) {
-        // Left click up checks if it was a quick click to trigger the strike
+        
         const elapsed = performance.now() - leftStartTime;
         const dist = Math.sqrt((e.clientX - leftStartX) ** 2 + (e.clientY - leftStartY) ** 2);
-        if (dist < 6 && elapsed < 350) {
+        
+        if (wasDragging && dist >= 6) {
+          // Dragged and released to shoot
+          if (this.currentPower >= 5) {
+            onStrike();
+          } else {
+            onPowerChange(0);
+          }
+        } else if (dist < 6 && elapsed < 350) {
+          // Quick click to shoot
           onStrike();
         }
       }
@@ -87,8 +96,20 @@ export class InputManager {
     return this.currentPower;
   }
 
+  public setCurrentPower(power: number) {
+    this.currentPower = power;
+  }
+
   public getIsDragging() {
     return this.isDragging;
+  }
+
+  public getStartDragPos() {
+    return { x: this.startDragX, y: this.startDragY };
+  }
+
+  public getCurrentDragPos() {
+    return { x: this.currentDragX, y: this.currentDragY };
   }
 
   /**
